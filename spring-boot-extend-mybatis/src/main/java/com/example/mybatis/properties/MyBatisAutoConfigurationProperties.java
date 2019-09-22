@@ -1,4 +1,4 @@
-package com.example.common.properties;
+package com.example.mybatis.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

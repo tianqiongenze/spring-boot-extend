@@ -1,5 +1,6 @@
-package com.example.common.config;
+package com.example.mybatis.config;
 
+import com.example.common.config.ConfigurationImportSelector;
 import org.springframework.core.type.AnnotationMetadata;
 
 /**

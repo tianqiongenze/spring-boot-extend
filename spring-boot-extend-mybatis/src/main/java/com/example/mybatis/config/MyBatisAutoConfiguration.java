@@ -1,6 +1,6 @@
-package com.example.common.config;
+package com.example.mybatis.config;
 
-import com.example.common.properties.MyBatisAutoConfigurationProperties;
+import com.example.mybatis.properties.MyBatisAutoConfigurationProperties;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
