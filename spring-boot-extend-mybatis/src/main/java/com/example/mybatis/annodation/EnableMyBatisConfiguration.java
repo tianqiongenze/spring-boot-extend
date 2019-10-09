@@ -17,6 +17,6 @@ import java.lang.annotation.*;
 @Documented
 @Inherited
 @Import({EnableMyBatisImportSelector.class})
-public @interface EnableMyBatis {
+public @interface EnableMyBatisConfiguration {
 
 }

@@ -1,7 +1,6 @@
 package com.example.mybatis.properties;
 
 import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * @version 1.0
@@ -11,8 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @Date 2019/9/22 23:29
  **/
 @Data
-@ConfigurationProperties(prefix="mybatis")
-public class MyBatisAutoConfigurationProperties {
+public class MyBatisConfigurationProperties {
 
     //名称
     private String name;
