@@ -1,10 +1,14 @@
 package com.example.mybatis.config;
 
 import com.example.common.constant.EnvironmentManager;
+import com.example.common.exception.BaseException;
 import com.example.mybatis.properties.MyBatisConfigurationProperties;
 import com.example.mybatis.utils.MyBatisConfigurationLoadUtil;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.apache.ibatis.plugin.Interceptor;
+import org.apache.ibatis.session.Configuration;
+import org.mybatis.spring.SqlSessionFactoryBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -20,9 +24,13 @@ import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.util.StringUtils;
 
-import java.util.List;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * @version 1.0
@@ -102,6 +110,50 @@ public class MyBatisAutoConfiguration implements BeanDefinitionRegistryPostProce
     }
 
     /**
+    *@Description 注册SessionFactory
+    *@Param [sessionFactoryName, beanFactory, config, dataSourceName]
+    *@Author mingj
+    *@Date 2019/10/20 22:46
+    *@Return void
+    **/
+    private void registerSessionFactoryDefinitionBuilder(String sessionFactoryName, BeanDefinitionRegistry beanFactory, MyBatisConfigurationProperties config, String dataSourceName) {
+        BeanDefinitionBuilder sessionFactoryDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition(SqlSessionFactoryBean.class);
+        sessionFactoryDefinitionBuilder.addPropertyValue("mapperLocations", resolveMapperLocations(config.getMapperLocations()));
+        sessionFactoryDefinitionBuilder.addPropertyValue("typeAliasesPackage", config.getTypeAliasesPackage());
+        //判断configLocation和Configuration的互斥关系
+        if (!StringUtils.isEmpty(config.getConfigLocation())) {
+            sessionFactoryDefinitionBuilder.addPropertyValue("configLocation", config.getConfigLocation());
+        } else {
+            Configuration configuration = new Configuration();
+            if (config.getDefaultStatementTimeout() != null) {
+                configuration.setDefaultStatementTimeout(config.getDefaultStatementTimeout());
+            }
+            if (config.getMapUnderscoreToCamelCase() != null){
+                configuration.setMapUnderscoreToCamelCase(config.getMapUnderscoreToCamelCase());
+            }
+            sessionFactoryDefinitionBuilder.addPropertyValue("configuration", configuration);
+        }
+        sessionFactoryDefinitionBuilder.addPropertyReference("dataSource", dataSourceName);
+        Properties properties = new Properties();
+        properties.setProperty("autoRuntimeDialect", "true");
+        List<Interceptor> mybatisInterceptors = new ArrayList<>();
+        Set<String> mybatisPlugins = PluginConfigManager.getPropertyValueSet("org.apache.ibatis.plugin.Interceptor");
+        mybatisPlugins.forEach(mybatisPlugin -> {
+            try {
+                Class pluginClass = Class.forName(mybatisPlugin);
+                Interceptor mybatisInterceptor = (Interceptor) pluginClass.newInstance();
+                mybatisInterceptors.add(mybatisInterceptor);
+            } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+                logger.error("load mybatis plugin error: ", e);
+            }
+        });
+
+        sessionFactoryDefinitionBuilder.addPropertyValue("plugins", mybatisInterceptors);
+        beanFactory.registerBeanDefinition(sessionFactoryName, sessionFactoryDefinitionBuilder.getRawBeanDefinition());
+
+    }
+
+    /**
     *@Description 注册数据源
     *@Param [dataSourceName, beanFactory, config]
     *@Author mingj
@@ -113,5 +165,29 @@ public class MyBatisAutoConfiguration implements BeanDefinitionRegistryPostProce
         BeanDefinitionBuilder dataSourceDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition(HikariDataSource.class);
         dataSourceDefinitionBuilder.addConstructorArgValue(hikariConfig);
         beanFactory.registerBeanDefinition(dataSourceName, dataSourceDefinitionBuilder.getRawBeanDefinition());
+    }
+
+    /**
+    *@Description 读取mapperLocations地址
+    *@Param [mapperLocations]
+    *@Author mingj
+    *@Date 2019/10/20 23:45
+    *@Return org.springframework.core.io.Resource[]
+    **/
+    private Resource[] resolveMapperLocations(String mapperLocations) {
+        ResourcePatternResolver resourceResolver = new PathMatchingResourcePatternResolver();
+        List<Resource> resources = new ArrayList<Resource>();
+        if (mapperLocations != null) {
+            String[] mapperLocationArray = mapperLocations.split(",");
+            for (String mapperLocation : mapperLocationArray) {
+                try {
+                    Resource[] mappers = resourceResolver.getResources(mapperLocation);
+                    resources.addAll(Arrays.asList(mappers));
+                } catch (IOException e) {
+                    throw new BaseException(e, "SYS000", "Mybatis接口文件读取失败", false);
+                }
+            }
+        }
+        return resources.toArray(new Resource[resources.size()]);
     }
 }
