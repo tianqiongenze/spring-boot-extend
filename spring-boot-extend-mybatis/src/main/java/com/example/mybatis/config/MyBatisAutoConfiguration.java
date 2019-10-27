@@ -6,9 +6,9 @@ import com.example.mybatis.properties.MyBatisConfigurationProperties;
 import com.example.mybatis.utils.MyBatisConfigurationLoadUtil;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.Configuration;
 import org.mybatis.spring.SqlSessionFactoryBean;
+import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -27,10 +27,13 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @version 1.0
@@ -110,6 +113,56 @@ public class MyBatisAutoConfiguration implements BeanDefinitionRegistryPostProce
     }
 
     /**
+    *@Description 注册事务模板
+    *@Param [transactionTemplateName, beanFactory, transactionManagerName]
+    *@Author mingj
+    *@Date 2019/10/27 12:54
+    *@Return void
+    **/
+    private void registerTransactionTemplateDefinitionBuilder(String transactionTemplateName, BeanDefinitionRegistry beanFactory, String transactionManagerName) {
+        BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.rootBeanDefinition(DataSourceTransactionManager.class);
+        beanDefinitionBuilder.addPropertyReference("transactionManager", transactionManagerName);
+        beanFactory.registerBeanDefinition(transactionTemplateName, beanDefinitionBuilder.getRawBeanDefinition());
+    }
+
+    /**
+    *@Description 注册事务管理器
+    *@Param [transactionManagerName, beanFactory, dataSourceName]
+    *@Author mingj
+    *@Date 2019/10/27 12:48
+    *@Return void
+    **/
+    private void registerTransactionManagerDefinitionBuilder(String transactionManagerName, BeanDefinitionRegistry beanFactory, String dataSourceName) {
+        BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.rootBeanDefinition(DataSourceTransactionManager.class);
+        beanDefinitionBuilder.addPropertyReference("dataSource", dataSourceName);
+        beanFactory.registerBeanDefinition(transactionManagerName, beanDefinitionBuilder.getRawBeanDefinition());
+    }
+
+    /**
+    *@Description 注册Mapper
+    *@Param [mapperScannerConfigurerName, beanFactory, config, sessionFactoryName]
+    *@Author mingj
+    *@Date 2019/10/27 12:15
+    *@Return void
+    **/
+    private void registerMapperScannerDefinitionBuilder(String mapperScannerConfigurerName, BeanDefinitionRegistry beanFactory, MyBatisConfigurationProperties config, String sessionFactoryName) {
+        BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition(MapperScannerConfigurer.class);
+        beanDefinitionBuilder.addPropertyValue("basePackage", config.getBasePackage());
+        beanDefinitionBuilder.addPropertyValue("SqlSessionFactory", sessionFactoryName);
+        if (config.getMarkerInterface() != null) {
+            beanDefinitionBuilder.addPropertyValue("markerInterface", config.getMarkerInterface());
+        }
+        if (!StringUtils.isEmpty(config.getMapperAnnotationClass())) {
+            try {
+                beanDefinitionBuilder.addPropertyValue("annotationClass", Class.forName(config.getMapperAnnotationClass()));
+            } catch (Exception e) {
+                throw new RuntimeException("The Mapper Annotation Class [" + config.getMapperAnnotationClass() + "] Not Loading !!");
+            }
+        }
+        beanFactory.registerBeanDefinition(mapperScannerConfigurerName, beanDefinitionBuilder.getBeanDefinition());
+    }
+
+    /**
     *@Description 注册SessionFactory
     *@Param [sessionFactoryName, beanFactory, config, dataSourceName]
     *@Author mingj
@@ -117,12 +170,12 @@ public class MyBatisAutoConfiguration implements BeanDefinitionRegistryPostProce
     *@Return void
     **/
     private void registerSessionFactoryDefinitionBuilder(String sessionFactoryName, BeanDefinitionRegistry beanFactory, MyBatisConfigurationProperties config, String dataSourceName) {
-        BeanDefinitionBuilder sessionFactoryDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition(SqlSessionFactoryBean.class);
-        sessionFactoryDefinitionBuilder.addPropertyValue("mapperLocations", resolveMapperLocations(config.getMapperLocations()));
-        sessionFactoryDefinitionBuilder.addPropertyValue("typeAliasesPackage", config.getTypeAliasesPackage());
+        BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition(SqlSessionFactoryBean.class);
+        beanDefinitionBuilder.addPropertyValue("mapperLocations", resolveMapperLocations(config.getMapperLocations()));
+        beanDefinitionBuilder.addPropertyValue("typeAliasesPackage", config.getTypeAliasesPackage());
         //判断configLocation和Configuration的互斥关系
         if (!StringUtils.isEmpty(config.getConfigLocation())) {
-            sessionFactoryDefinitionBuilder.addPropertyValue("configLocation", config.getConfigLocation());
+            beanDefinitionBuilder.addPropertyValue("configLocation", config.getConfigLocation());
         } else {
             Configuration configuration = new Configuration();
             if (config.getDefaultStatementTimeout() != null) {
@@ -131,25 +184,23 @@ public class MyBatisAutoConfiguration implements BeanDefinitionRegistryPostProce
             if (config.getMapUnderscoreToCamelCase() != null){
                 configuration.setMapUnderscoreToCamelCase(config.getMapUnderscoreToCamelCase());
             }
-            sessionFactoryDefinitionBuilder.addPropertyValue("configuration", configuration);
+            beanDefinitionBuilder.addPropertyValue("configuration", configuration);
         }
-        sessionFactoryDefinitionBuilder.addPropertyReference("dataSource", dataSourceName);
-        Properties properties = new Properties();
-        properties.setProperty("autoRuntimeDialect", "true");
-        List<Interceptor> mybatisInterceptors = new ArrayList<>();
-        Set<String> mybatisPlugins = PluginConfigManager.getPropertyValueSet("org.apache.ibatis.plugin.Interceptor");
-        mybatisPlugins.forEach(mybatisPlugin -> {
-            try {
-                Class pluginClass = Class.forName(mybatisPlugin);
-                Interceptor mybatisInterceptor = (Interceptor) pluginClass.newInstance();
-                mybatisInterceptors.add(mybatisInterceptor);
-            } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-                logger.error("load mybatis plugin error: ", e);
-            }
-        });
+        beanDefinitionBuilder.addPropertyReference("dataSource", dataSourceName);
+//        List<Interceptor> mybatisInterceptors = new ArrayList<>();
+//        Set<String> mybatisPlugins = PluginConfigManager.getPropertyValueSet("org.apache.ibatis.plugin.Interceptor");
+//        mybatisPlugins.forEach(mybatisPlugin -> {
+//            try {
+//                Class pluginClass = Class.forName(mybatisPlugin);
+//                Interceptor mybatisInterceptor = (Interceptor) pluginClass.newInstance();
+//                mybatisInterceptors.add(mybatisInterceptor);
+//            } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+//                logger.error("load mybatis plugin error: ", e);
+//            }
+//        });
 
-        sessionFactoryDefinitionBuilder.addPropertyValue("plugins", mybatisInterceptors);
-        beanFactory.registerBeanDefinition(sessionFactoryName, sessionFactoryDefinitionBuilder.getRawBeanDefinition());
+//        beanDefinitionBuilder.addPropertyValue("plugins", mybatisInterceptors);
+        beanFactory.registerBeanDefinition(sessionFactoryName, beanDefinitionBuilder.getRawBeanDefinition());
 
     }
 
