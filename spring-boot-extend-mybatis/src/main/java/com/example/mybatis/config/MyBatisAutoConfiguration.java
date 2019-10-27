@@ -4,8 +4,10 @@ import com.example.common.constant.EnvironmentManager;
 import com.example.common.exception.BaseException;
 import com.example.mybatis.properties.MyBatisConfigurationProperties;
 import com.example.mybatis.utils.MyBatisConfigurationLoadUtil;
+import com.example.mybatis.utils.PluginConfigManager;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.Configuration;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
@@ -34,6 +36,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @version 1.0
@@ -187,19 +190,19 @@ public class MyBatisAutoConfiguration implements BeanDefinitionRegistryPostProce
             beanDefinitionBuilder.addPropertyValue("configuration", configuration);
         }
         beanDefinitionBuilder.addPropertyReference("dataSource", dataSourceName);
-//        List<Interceptor> mybatisInterceptors = new ArrayList<>();
-//        Set<String> mybatisPlugins = PluginConfigManager.getPropertyValueSet("org.apache.ibatis.plugin.Interceptor");
-//        mybatisPlugins.forEach(mybatisPlugin -> {
-//            try {
-//                Class pluginClass = Class.forName(mybatisPlugin);
-//                Interceptor mybatisInterceptor = (Interceptor) pluginClass.newInstance();
-//                mybatisInterceptors.add(mybatisInterceptor);
-//            } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-//                logger.error("load mybatis plugin error: ", e);
-//            }
-//        });
+        List<Interceptor> mybatisInterceptors = new ArrayList<>();
+        Set<String> mybatisPlugins = PluginConfigManager.getPropertyValueSet("org.apache.ibatis.plugin.Interceptor");
+        mybatisPlugins.forEach(mybatisPlugin -> {
+            try {
+                Class pluginClass = Class.forName(mybatisPlugin);
+                Interceptor mybatisInterceptor = (Interceptor) pluginClass.newInstance();
+                mybatisInterceptors.add(mybatisInterceptor);
+            } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+                logger.error("load mybatis plugin error: ", e);
+            }
+        });
 
-//        beanDefinitionBuilder.addPropertyValue("plugins", mybatisInterceptors);
+        beanDefinitionBuilder.addPropertyValue("plugins", mybatisInterceptors);
         beanFactory.registerBeanDefinition(sessionFactoryName, beanDefinitionBuilder.getRawBeanDefinition());
 
     }
