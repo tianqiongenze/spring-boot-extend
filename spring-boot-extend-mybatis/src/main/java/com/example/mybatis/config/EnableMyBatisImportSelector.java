@@ -1,6 +1,7 @@
 package com.example.mybatis.config;
 
 import com.example.common.config.ConfigurationImportSelector;
+import com.example.mybatis.aop.TransactionalManagementInterceptor;
 import org.springframework.core.type.AnnotationMetadata;
 
 /**
@@ -14,6 +15,6 @@ public class EnableMyBatisImportSelector extends ConfigurationImportSelector {
 
     @Override
     public String[] importSelect(AnnotationMetadata importingClassMetadata) {
-        return new String[]{MyBatisAutoConfiguration.class.getName()};
+        return new String[]{MyBatisAutoConfiguration.class.getName(), TransactionalManagementInterceptor.class.getName()};
     }
 }
