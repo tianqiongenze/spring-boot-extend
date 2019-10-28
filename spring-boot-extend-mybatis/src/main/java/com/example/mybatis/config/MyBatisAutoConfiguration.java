@@ -111,8 +111,8 @@ public class MyBatisAutoConfiguration implements BeanDefinitionRegistryPostProce
         registerDataSourceBeanDefinitionBuilder(dataSourceName, beanFactory, config);
         registerSessionFactoryDefinitionBuilder(sessionFactoryName, beanFactory, config, dataSourceName);
         registerMapperScannerDefinitionBuilder(mapperScannerConfigurerName, beanFactory, config, sessionFactoryName);
-        registerTransactionManagerDefinitionBuilder(transactionManagerName, beanFactory, dataSourceName);
-        registerTransactionTemplateDefinitionBuilder(transactionTemplateName, beanFactory, transactionManagerName);
+        registerTransactionManagerDefinitionBuilder(transactionManagerName, beanFactory, dataSourceName, transactionTemplateName);
+//        registerTransactionTemplateDefinitionBuilder(transactionTemplateName, beanFactory, transactionManagerName);
     }
 
     /**
@@ -122,11 +122,11 @@ public class MyBatisAutoConfiguration implements BeanDefinitionRegistryPostProce
     *@Date 2019/10/27 12:54
     *@Return void
     **/
-    private void registerTransactionTemplateDefinitionBuilder(String transactionTemplateName, BeanDefinitionRegistry beanFactory, String transactionManagerName) {
-        BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.rootBeanDefinition(DataSourceTransactionManager.class);
-        beanDefinitionBuilder.addPropertyReference("transactionManager", transactionManagerName);
-        beanFactory.registerBeanDefinition(transactionTemplateName, beanDefinitionBuilder.getRawBeanDefinition());
-    }
+//    private void registerTransactionTemplateDefinitionBuilder(String transactionTemplateName, BeanDefinitionRegistry beanFactory, String transactionManagerName) {
+//        BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.rootBeanDefinition(DataSourceTransactionManager.class);
+//        beanDefinitionBuilder.addPropertyReference("transactionManager", transactionManagerName);
+//        beanFactory.registerBeanDefinition(transactionTemplateName, beanDefinitionBuilder.getRawBeanDefinition());
+//    }
 
     /**
     *@Description 注册事务管理器
@@ -135,10 +135,12 @@ public class MyBatisAutoConfiguration implements BeanDefinitionRegistryPostProce
     *@Date 2019/10/27 12:48
     *@Return void
     **/
-    private void registerTransactionManagerDefinitionBuilder(String transactionManagerName, BeanDefinitionRegistry beanFactory, String dataSourceName) {
+    private void registerTransactionManagerDefinitionBuilder(String transactionManagerName, BeanDefinitionRegistry beanFactory, String dataSourceName, String transactionTemplateName) {
         BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.rootBeanDefinition(DataSourceTransactionManager.class);
         beanDefinitionBuilder.addPropertyReference("dataSource", dataSourceName);
+        beanDefinitionBuilder.addPropertyValue("transactionManager", transactionManagerName);
         beanFactory.registerBeanDefinition(transactionManagerName, beanDefinitionBuilder.getRawBeanDefinition());
+        beanFactory.registerBeanDefinition(transactionTemplateName, beanDefinitionBuilder.getRawBeanDefinition());
     }
 
     /**
@@ -178,6 +180,7 @@ public class MyBatisAutoConfiguration implements BeanDefinitionRegistryPostProce
         beanDefinitionBuilder.addPropertyValue("typeAliasesPackage", config.getTypeAliasesPackage());
         //判断configLocation和Configuration的互斥关系
         if (!StringUtils.isEmpty(config.getConfigLocation())) {
+            //读取mybatis的全局配置文件
             beanDefinitionBuilder.addPropertyValue("configLocation", config.getConfigLocation());
         } else {
             Configuration configuration = new Configuration();
