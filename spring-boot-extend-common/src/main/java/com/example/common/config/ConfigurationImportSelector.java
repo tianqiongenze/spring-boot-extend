@@ -33,7 +33,8 @@ public abstract class ConfigurationImportSelector implements ImportSelector {
      * 注解类型
      */
     enum EnableType {
-        ENABLE_MYBATIS("EnableMyBatisImportSelector", "EnableMybatis");
+        ENABLE_MYBATIS("EnableMyBatisImportSelector", "EnableMybatis"),
+        ENABLE_MONGODB("EnableMongoDbImportSelector","EnableMongoDb");
 
         private final String value;
 

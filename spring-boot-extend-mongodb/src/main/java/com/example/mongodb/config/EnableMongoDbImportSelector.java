@@ -14,6 +14,6 @@ public class EnableMongoDbImportSelector extends ConfigurationImportSelector {
 
     @Override
     public String[] importSelect(AnnotationMetadata importingClassMetadata) {
-        return new String[0];
+        return new String[]{MongoDbDataSourceConfig.class.getName()};
     }
 }
