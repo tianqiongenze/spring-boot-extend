@@ -1,8 +1,9 @@
 package com.example.mongodb.config;
 
 import com.example.common.constant.EnvironmentManager;
+import com.example.common.utils.ConfigurationLoadUtil;
 import com.example.mongodb.properties.MongoDbProperties;
-import com.example.mongodb.utils.MongoDbConfigLoadUtil;
+import com.example.mongodb.utils.MongoDbConfigurationLoadUtil;
 import com.mongodb.MongoClientURI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,10 +66,10 @@ public class MongoDbDataSourceConfig implements BeanDefinitionRegistryPostProces
     }
 
     private void initConfig(){
-        if (!StringUtils.isEmpty(env.getProperty(EnvironmentManager.MONGODB_CONFIG_NAME))) {
-            config = MongoDbConfigLoadUtil.loadSingleMongodbConfigFrom(env);
+        if (!StringUtils.isEmpty(ConfigurationLoadUtil.getProperty(env, EnvironmentManager.MONGODB_CONFIG_NAME))) {
+            config = MongoDbConfigurationLoadUtil.loadSingleMongodbConfigFrom(env);
         } else {
-            configs = MongoDbConfigLoadUtil.loadMultipleMongodbConfigFrom(env);
+            configs = MongoDbConfigurationLoadUtil.loadMultipleMongodbConfigFrom(env);
         }
     }
 
@@ -80,7 +81,7 @@ public class MongoDbDataSourceConfig implements BeanDefinitionRegistryPostProces
     *@Return void
     **/
     private void registerBean(BeanDefinitionRegistry beanFactory, MongoDbProperties config, Boolean flag) {
-        MongoClientURI mongoClientURI = MongoDbConfigLoadUtil.convertConfig(config);
+        MongoClientURI mongoClientURI = MongoDbConfigurationLoadUtil.convertConfig(config);
 
         String factorySourceName = config.getName() + "MongoFactory";
         String templateSourceName = flag?"mongoTemplate":config.getName() + "MongoTemplate";

@@ -2,6 +2,7 @@ package com.example.mybatis.config;
 
 import com.example.common.constant.EnvironmentManager;
 import com.example.common.exception.BaseException;
+import com.example.common.utils.ConfigurationLoadUtil;
 import com.example.mybatis.properties.MyBatisConfigurationProperties;
 import com.example.mybatis.utils.MyBatisConfigurationLoadUtil;
 import com.example.mybatis.utils.PluginConfigManager;
@@ -88,7 +89,7 @@ public class MyBatisAutoConfiguration implements BeanDefinitionRegistryPostProce
     *@Return void
     **/
     private void initConfig(){
-        if (!StringUtils.isEmpty(env.getProperty(EnvironmentManager.MYBATIS_CONFIG_NAME))) {
+        if (!StringUtils.isEmpty(ConfigurationLoadUtil.getProperty(env, EnvironmentManager.MYBATIS_CONFIG_NAME))) {
             config = MyBatisConfigurationLoadUtil.loadSingleMyBatisConfiguration(env);
         } else {
             configs = MyBatisConfigurationLoadUtil.loadMultipleMyBatisConfiguration(env);
@@ -246,4 +247,6 @@ public class MyBatisAutoConfiguration implements BeanDefinitionRegistryPostProce
         }
         return resources.toArray(new Resource[resources.size()]);
     }
+
+
 }

@@ -1,6 +1,7 @@
 package com.example.mybatis.utils;
 
 import com.example.common.constant.EnvironmentManager;
+import com.example.common.utils.ConfigurationLoadUtil;
 import com.example.mybatis.properties.MyBatisConfigurationProperties;
 import com.zaxxer.hikari.HikariConfig;
 import org.springframework.core.env.Environment;
@@ -28,7 +29,7 @@ public class MyBatisConfigurationLoadUtil {
     *@Return com.example.mybatis.properties.MyBatisConfigurationProperties
     **/
     public static MyBatisConfigurationProperties loadSingleMyBatisConfiguration(Environment env){
-        String name = getProperty(env, EnvironmentManager.MYBATIS_CONFIG_NAME);
+        String name = ConfigurationLoadUtil.getProperty(env, EnvironmentManager.MYBATIS_CONFIG_NAME);
         //数据源配置，如果读取不到，直接返回Null
         if (StringUtils.isEmpty(name)){
             return null;
@@ -36,54 +37,54 @@ public class MyBatisConfigurationLoadUtil {
         MyBatisConfigurationProperties config = new MyBatisConfigurationProperties();
         //配置名称，用于后续实现多数据源事务
         config.setName(name);
-        config.setBasePackage(getProperty(env, EnvironmentManager.MYBATIS_CONFIG_BASEPACKAGE));
-        config.setJdbcUrl(getProperty(env, EnvironmentManager.MYBATIS_CONFIG_JDBCURL));
-        config.setDriverClassName(getProperty(env, EnvironmentManager.MYBATIS_CONFIG_DRIVERCLASSNAME));
-        config.setUsername(getProperty(env, EnvironmentManager.MYBATIS_CONFIG_USERNAME));
-        config.setPassword(getProperty(env, EnvironmentManager.MYBATIS_CONFIG_PASSWORD));
-        String readOnly = getProperty(env, EnvironmentManager.MYBATIS_CONFIG_READONLY);
+        config.setBasePackage(ConfigurationLoadUtil.getProperty(env, EnvironmentManager.MYBATIS_CONFIG_BASEPACKAGE));
+        config.setJdbcUrl(ConfigurationLoadUtil.getProperty(env, EnvironmentManager.MYBATIS_CONFIG_JDBCURL));
+        config.setDriverClassName(ConfigurationLoadUtil.getProperty(env, EnvironmentManager.MYBATIS_CONFIG_DRIVERCLASSNAME));
+        config.setUsername(ConfigurationLoadUtil.getProperty(env, EnvironmentManager.MYBATIS_CONFIG_USERNAME));
+        config.setPassword(ConfigurationLoadUtil.getProperty(env, EnvironmentManager.MYBATIS_CONFIG_PASSWORD));
+        String readOnly = ConfigurationLoadUtil.getProperty(env, EnvironmentManager.MYBATIS_CONFIG_READONLY);
         if (!StringUtils.isEmpty(readOnly)){
             config.setReadOnly(Boolean.parseBoolean(readOnly.trim()));
         }
-        String connectionTimeoutStr = getProperty(env, EnvironmentManager.MYBATIS_CONFIG_CONNECTIONTIMEOUT);
+        String connectionTimeoutStr = ConfigurationLoadUtil.getProperty(env, EnvironmentManager.MYBATIS_CONFIG_CONNECTIONTIMEOUT);
         if (!StringUtils.isEmpty(connectionTimeoutStr)) {
             config.setConnectionTimeout(Long.parseLong(connectionTimeoutStr));
         }
-        String idleTimeoutStr = getProperty(env, EnvironmentManager.MYBATIS_CONFIG_IDLETIMEOUT);
+        String idleTimeoutStr = ConfigurationLoadUtil.getProperty(env, EnvironmentManager.MYBATIS_CONFIG_IDLETIMEOUT);
         if (!StringUtils.isEmpty(idleTimeoutStr)) {
             config.setIdleTimeout(Long.parseLong(idleTimeoutStr));
         }
-        String maxLifetimeStr = getProperty(env, EnvironmentManager.MYBATIS_CONFIG_MAXLIFETIME);
+        String maxLifetimeStr = ConfigurationLoadUtil.getProperty(env, EnvironmentManager.MYBATIS_CONFIG_MAXLIFETIME);
         if (!StringUtils.isEmpty(maxLifetimeStr)) {
             config.setMaxLifetime(Long.parseLong(maxLifetimeStr));
         }
-        String maxImumpoolSizeStr = getProperty(env, EnvironmentManager.MYBATIS_CONFIG_MAXIMUMPOOLSIZE);
+        String maxImumpoolSizeStr = ConfigurationLoadUtil.getProperty(env, EnvironmentManager.MYBATIS_CONFIG_MAXIMUMPOOLSIZE);
         if (!StringUtils.isEmpty(maxImumpoolSizeStr)) {
             config.setMaximumPoolSize(Integer.parseInt(maxImumpoolSizeStr));
         }
-        String mapperAnnotationClass = getProperty(env, EnvironmentManager.MYBATIS_CONFIG_MAPPER_ANNOTATION_CLASS);
+        String mapperAnnotationClass = ConfigurationLoadUtil.getProperty(env, EnvironmentManager.MYBATIS_CONFIG_MAPPER_ANNOTATION_CLASS);
         if (!StringUtils.isEmpty(mapperAnnotationClass)) {
             config.setMapperAnnotationClass(mapperAnnotationClass);
         }
-        config.setMapperLocations(getProperty(env, EnvironmentManager.MYBATIS_CONFIG_MAPPERLOCATIONS));
-        config.setTypeAliasesPackage(getProperty(env, EnvironmentManager.MYBATIS_CONFIG_TYPEALIASEPACKAGE));
-        String markerInterface = getProperty(env, EnvironmentManager.MYBATIS_CONFIG_MARKERINTERFACE);
+        config.setMapperLocations(ConfigurationLoadUtil.getProperty(env, EnvironmentManager.MYBATIS_CONFIG_MAPPERLOCATIONS));
+        config.setTypeAliasesPackage(ConfigurationLoadUtil.getProperty(env, EnvironmentManager.MYBATIS_CONFIG_TYPEALIASEPACKAGE));
+        String markerInterface = ConfigurationLoadUtil.getProperty(env, EnvironmentManager.MYBATIS_CONFIG_MARKERINTERFACE);
         if (!StringUtils.isEmpty(markerInterface)) {
             config.setMarkerInterface(markerInterface);
         }
-        String defaultStatementTimeoutStr = getProperty(env, EnvironmentManager.MYBATIS_CONFIG_DEFAULTSTATEMENTTIMEOUT);
+        String defaultStatementTimeoutStr = ConfigurationLoadUtil.getProperty(env, EnvironmentManager.MYBATIS_CONFIG_DEFAULTSTATEMENTTIMEOUT);
         if (!StringUtils.isEmpty(defaultStatementTimeoutStr)) {
             config.setDefaultStatementTimeout(Integer.parseInt(defaultStatementTimeoutStr));
         }
-        String configLocation = getProperty(env, EnvironmentManager.MYBATIS_CONFIG_CONFIGLOCATION);
+        String configLocation = ConfigurationLoadUtil.getProperty(env, EnvironmentManager.MYBATIS_CONFIG_CONFIGLOCATION);
         if (!StringUtils.isEmpty(configLocation)){
             config.setConfigLocation(configLocation);
         }
-        String mapUnderscoreToCamelCase = getProperty(env, EnvironmentManager.MYBATIS_CONFIG_MAPUNDERSCORETOCAMELCASE);
+        String mapUnderscoreToCamelCase = ConfigurationLoadUtil.getProperty(env, EnvironmentManager.MYBATIS_CONFIG_MAPUNDERSCORETOCAMELCASE);
         if (!StringUtils.isEmpty(mapUnderscoreToCamelCase)){
             config.setMapUnderscoreToCamelCase(Boolean.valueOf(mapUnderscoreToCamelCase));
         }
-        String connectionInitSql = getProperty(env, EnvironmentManager.MYBATIS_CONFIG_CONNECTIONINITSQL);
+        String connectionInitSql = ConfigurationLoadUtil.getProperty(env, EnvironmentManager.MYBATIS_CONFIG_CONNECTIONINITSQL);
         if (!StringUtils.isEmpty(connectionInitSql)){
             config.setConnectionInitSql(connectionInitSql);
         }
@@ -101,57 +102,57 @@ public class MyBatisConfigurationLoadUtil {
         Map<String, MyBatisConfigurationProperties> configsMap = new HashMap<>();
         int index = 0;
         while (true) {
-            String configName = getProperty(env, EnvironmentManager.MYBATIS_CONFIGS_NAME, index);
+            String configName = ConfigurationLoadUtil.getProperty(env, EnvironmentManager.MYBATIS_CONFIGS_NAME, index);
             if (!StringUtils.isEmpty(configName)) {
                 //如果配置名相同,则只有第一个有效
                 if (!configsMap.containsKey(configName)) {
                     //读取配置参数
                     MyBatisConfigurationProperties config = new MyBatisConfigurationProperties();
                     config.setName(configName);
-                    config.setBasePackage(getProperty(env, EnvironmentManager.MYBATIS_CONFIGS_BASEPACKAGE, index));
-                    config.setDriverClassName(getProperty(env, EnvironmentManager.MYBATIS_CONFIGS_DRIVERCLASSNAME, index));
-                    config.setJdbcUrl(getProperty(env, EnvironmentManager.MYBATIS_CONFIGS_JDBCURL, index));
-                    config.setUsername(getProperty(env, EnvironmentManager.MYBATIS_CONFIGS_USERNAME, index));
-                    config.setPassword(getProperty(env, EnvironmentManager.MYBATIS_CONFIGS_PASSWORD, index));
-                    String readOnlyStr = getProperty(env, EnvironmentManager.MYBATIS_CONFIGS_READONLY, index);
+                    config.setBasePackage(ConfigurationLoadUtil.getProperty(env, EnvironmentManager.MYBATIS_CONFIGS_BASEPACKAGE, index));
+                    config.setDriverClassName(ConfigurationLoadUtil.getProperty(env, EnvironmentManager.MYBATIS_CONFIGS_DRIVERCLASSNAME, index));
+                    config.setJdbcUrl(ConfigurationLoadUtil.getProperty(env, EnvironmentManager.MYBATIS_CONFIGS_JDBCURL, index));
+                    config.setUsername(ConfigurationLoadUtil.getProperty(env, EnvironmentManager.MYBATIS_CONFIGS_USERNAME, index));
+                    config.setPassword(ConfigurationLoadUtil.getProperty(env, EnvironmentManager.MYBATIS_CONFIGS_PASSWORD, index));
+                    String readOnlyStr = ConfigurationLoadUtil.getProperty(env, EnvironmentManager.MYBATIS_CONFIGS_READONLY, index);
                     if (!StringUtils.isEmpty(readOnlyStr)) {
                         config.setReadOnly(Boolean.parseBoolean(readOnlyStr.trim()));
                     }
-                    String markerInterface = getProperty(env, EnvironmentManager.MYBATIS_CONFIGS_MARKERINTERFACE, index);
+                    String markerInterface = ConfigurationLoadUtil.getProperty(env, EnvironmentManager.MYBATIS_CONFIGS_MARKERINTERFACE, index);
                     if (!StringUtils.isEmpty(markerInterface)) {
                         config.setMarkerInterface(markerInterface);
                     }
-                    String connectionTimeoutStr = getProperty(env, EnvironmentManager.MYBATIS_CONFIGS_CONNECTIONTIMEOUT, index);
+                    String connectionTimeoutStr = ConfigurationLoadUtil.getProperty(env, EnvironmentManager.MYBATIS_CONFIGS_CONNECTIONTIMEOUT, index);
                     if (!StringUtils.isEmpty(connectionTimeoutStr)) {
                         config.setConnectionTimeout(Long.parseLong(connectionTimeoutStr));
                     }
-                    String idleTimeoutStr = getProperty(env, EnvironmentManager.MYBATIS_CONFIGS_IDLETIMEOUT, index);
+                    String idleTimeoutStr = ConfigurationLoadUtil.getProperty(env, EnvironmentManager.MYBATIS_CONFIGS_IDLETIMEOUT, index);
                     if (!StringUtils.isEmpty(idleTimeoutStr)) {
                         config.setIdleTimeout(Long.parseLong(idleTimeoutStr));
                     }
-                    String maxLifetimeStr = getProperty(env, EnvironmentManager.MYBATIS_CONFIGS_MAXLIFETIME, index);
+                    String maxLifetimeStr = ConfigurationLoadUtil.getProperty(env, EnvironmentManager.MYBATIS_CONFIGS_MAXLIFETIME, index);
                     if (!StringUtils.isEmpty(maxLifetimeStr)) {
                         config.setMaxLifetime(Long.parseLong(maxLifetimeStr));
                     }
-                    String maxImumpoolSizeStr = getProperty(env, EnvironmentManager.MYBATIS_CONFIGS_MAXIMUMPOOLSIZE, index);
+                    String maxImumpoolSizeStr = ConfigurationLoadUtil.getProperty(env, EnvironmentManager.MYBATIS_CONFIGS_MAXIMUMPOOLSIZE, index);
                     if (!StringUtils.isEmpty(maxImumpoolSizeStr)) {
                         config.setMaximumPoolSize(Integer.parseInt(maxImumpoolSizeStr));
                     }
-                    config.setMapperLocations(getProperty(env, EnvironmentManager.MYBATIS_CONFIGS_MAPPERLOCATIONS, index));
-                    config.setTypeAliasesPackage(getProperty(env, EnvironmentManager.MYBATIS_CONFIGS_TYPEALIASEPACKAGE, index));
-                    String defaultStatementTimeoutStr = getProperty(env, EnvironmentManager.MYBATIS_CONFIGS_DEFAULTSTATEMENTTIMEOUT, index);
+                    config.setMapperLocations(ConfigurationLoadUtil.getProperty(env, EnvironmentManager.MYBATIS_CONFIGS_MAPPERLOCATIONS, index));
+                    config.setTypeAliasesPackage(ConfigurationLoadUtil.getProperty(env, EnvironmentManager.MYBATIS_CONFIGS_TYPEALIASEPACKAGE, index));
+                    String defaultStatementTimeoutStr = ConfigurationLoadUtil.getProperty(env, EnvironmentManager.MYBATIS_CONFIGS_DEFAULTSTATEMENTTIMEOUT, index);
                     if (!StringUtils.isEmpty(defaultStatementTimeoutStr)) {
                         config.setDefaultStatementTimeout(Integer.parseInt(defaultStatementTimeoutStr));
                     }
-                    String configLocation = getProperty(env, EnvironmentManager.MYBATIS_CONFIGS_CONFIGLOCATION, index);
+                    String configLocation = ConfigurationLoadUtil.getProperty(env, EnvironmentManager.MYBATIS_CONFIGS_CONFIGLOCATION, index);
                     if (!StringUtils.isEmpty(configLocation)){
                         config.setConfigLocation(configLocation);
                     }
-                    String mapUnderscoreToCamelCase = getProperty(env, EnvironmentManager.MYBATIS_CONFIGS_MAPUNDERSCORETOCAMELCASE, index);
+                    String mapUnderscoreToCamelCase = ConfigurationLoadUtil.getProperty(env, EnvironmentManager.MYBATIS_CONFIGS_MAPUNDERSCORETOCAMELCASE, index);
                     if (!StringUtils.isEmpty(mapUnderscoreToCamelCase)){
                         config.setMapUnderscoreToCamelCase(Boolean.valueOf(mapUnderscoreToCamelCase));
                     }
-                    String connectionInitSql = getProperty(env, EnvironmentManager.MYBATIS_CONFIGS_CONNECTIONINITSQL, index);
+                    String connectionInitSql = ConfigurationLoadUtil.getProperty(env, EnvironmentManager.MYBATIS_CONFIGS_CONNECTIONINITSQL, index);
                     if (!StringUtils.isEmpty(connectionInitSql)){
                         config.setConnectionInitSql(connectionInitSql);
                     }
@@ -164,29 +165,6 @@ public class MyBatisConfigurationLoadUtil {
         }
         return new ArrayList<>(configsMap.values());
 
-    }
-
-    /**
-    *@Description 读取property属性
-    *@Param [env, property]
-    *@Author mingj
-    *@Date 2019/9/29 12:55
-    *@Return java.lang.String
-    **/
-    private static String getProperty(Environment env, String property){
-        return env.getProperty(property);
-    }
-
-    /**
-    *@Description 多数据源情况读取配置属性，带有占位符
-    *@Param [env, keyPlaceholder, index]
-    *@Author mingj
-    *@Date 2019/9/29 12:56
-    *@Return java.lang.String
-    **/
-    private static String getProperty(Environment env, String keyPlaceholder, int index) {
-        String key = String.format(keyPlaceholder, index);
-        return env.getProperty(key);
     }
 
     /**

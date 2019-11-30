@@ -1,6 +1,7 @@
 package com.example.mongodb.utils;
 
 import com.example.common.constant.EnvironmentManager;
+import com.example.common.utils.ConfigurationLoadUtil;
 import com.example.mongodb.properties.MongoDbProperties;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoClientURI;
@@ -20,9 +21,9 @@ import java.util.List;
  * @Author mingj
  * @Date 2019/4/14 17:03
  **/
-public class MongoDbConfigLoadUtil {
+public class MongoDbConfigurationLoadUtil {
 
-    private static final Logger logger = LoggerFactory.getLogger(MongoDbConfigLoadUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(MongoDbConfigurationLoadUtil.class);
 
     public static MongoDbProperties loadSingleMongodbConfigFrom(Environment env) {
         return AppConfigLoadUtil.loadMongoDbConfig(env);
@@ -32,7 +33,7 @@ public class MongoDbConfigLoadUtil {
         HashMap<String, MongoDbProperties> configsMap = new HashMap<>();
         int index = 0;
         while (true) {
-            String configName = env.getProperty(String.format(EnvironmentManager.MONGODB_CONFIGS_NAME, index));
+            String configName = ConfigurationLoadUtil.getProperty(env, String.format(EnvironmentManager.MONGODB_CONFIGS_NAME, index));
             if (!StringUtils.isEmpty(configName)) {
                 //如果配置名相同,则只有第一个有效
                 if (!configsMap.containsKey(configName)) {
