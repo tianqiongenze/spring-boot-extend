@@ -18,5 +18,5 @@ import java.lang.annotation.*;
 @Documented
 @Inherited
 @Import({EnableMongoDbImportSelector.class})
-public @interface EnableMongoDb {
+public @interface EnableMongoDbConfiguration {
 }

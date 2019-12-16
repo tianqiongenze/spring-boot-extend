@@ -1,5 +1,9 @@
 package com.example.common.constant;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
 /**
  * @version 1.0
  * @ClassName EnvironmentManager
@@ -95,4 +99,51 @@ public class EnvironmentManager {
     public static final Boolean MONGODB_DEFAULT_CONFIG_SOCKETKEEPALIVE = true;
     public static final Integer MONGODB_DEFAULT_CONFIG_SERVERSELECTIONTIMEOUT = 1000 * 300;
     public static final Boolean MONGODB_DEFAULT_CONFIG_REPOSITORIESENABLED = true;
+
+    //dubbo服务配置
+    public static final String DUBBO_PROTOCOL = "dubbo.protocol";
+    public static final String DUBBO_PORT = "dubbo.port";
+    public static final String DUBBO_LOGGER = "dubbo.logger";
+    public static final String DUBBO_HOST = "dubbo.host";
+    public static final String DUBBO_TIMEOUT = "dubbo.timeout";
+    public static final String DUBBO_RETRIES = "dubbo.retries";
+    public static final String DUBBO_DELAY = "dubbo.delay";
+    public static final String DUBBO_REGISTRY_PROTOCOL = "dubbo.registryProtocol";
+    public static final String DUBBO_REGISTRY_ADDRESS = "dubbo.registryAddress";
+    public static final String DUBBO_SCAN_PACKAGE_NAME = "dubbo.scanPackageName";
+    public static final String DUBBO_ENV_CONFIG_NAME = "dubbo.env.name";
+    public static final String DUBBO_CAT_SERVER_APPLICATION_CONFIG_NAME = "serverApplicationName";
+
+
+    private static Properties properties;
+    private static final Map<String, Properties> PROPERTIES_MAP = new HashMap<>();
+
+    /**
+    *@Description 
+    *@Param [key, value]
+    *@Author mingj
+    *@Date 2019/12/16 23:25
+    *@Return void
+    **/
+    public static void setProperty(String key, String value) {
+        if (properties == null) {
+            properties = PROPERTIES_MAP.get(getEnv());
+            if (properties == null) {
+                properties = new Properties();
+            }
+        }
+        properties.setProperty(key, value);
+    }
+
+    /**
+    *@Description 获取环境变量
+    *@Param []
+    *@Author mingj
+    *@Date 2019/12/16 23:25
+    *@Return java.lang.String
+    **/
+    private static String getEnv() {
+        final String env = System.getProperty("env");
+        return env == null ? "dev" : env;
+    }
 }
