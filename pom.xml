@@ -22,6 +22,7 @@
         <module>spring-boot-extend-mybatis</module>
         <module>spring-boot-extend-common</module>
         <module>spring-boot-extend-mongodb</module>
+        <module>spring-boot-extend-dubbo</module>
     </modules>
 
     <dependencies>

@@ -4,8 +4,6 @@ import org.springframework.context.annotation.ImportSelector;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.util.StringUtils;
 
-import java.util.Arrays;
-
 /**
  * @version 1.0
  * @ClassName ConfigurationImportSelector
@@ -19,7 +17,7 @@ public abstract class ConfigurationImportSelector implements ImportSelector {
 
     @Override
     public String[] selectImports(AnnotationMetadata annotationMetadata) {
-        EnableType enableType = EnableType.getByValue(this.getClass().getSimpleName());
+        EnableType enableType = EnableType.getTypeByValue(this.getClass().getSimpleName());
         if (enableType != null && isEnable(enableType)) {
             return importSelect(annotationMetadata);
         }
@@ -33,8 +31,9 @@ public abstract class ConfigurationImportSelector implements ImportSelector {
      * 注解类型
      */
     enum EnableType {
-        ENABLE_MYBATIS("EnableMyBatisImportSelector", "EnableMybatis"),
-        ENABLE_MONGODB("EnableMongoDbImportSelector","EnableMongoDb");
+        ENABLE_MYBATIS_CONFIGURATION("EnableMyBatisImportSelector", "EnableMyBatisConfiguration"),
+        ENABLE_MONGODB_CONFIGURATION("EnableMongoDbImportSelector","EnableMongoDbConfiguration"),
+        ENABLE_DUBBO_CONFIGURATION("EnableDubboImportSelector","EnableDubboConfiguration");
 
         private final String value;
 
@@ -54,8 +53,14 @@ public abstract class ConfigurationImportSelector implements ImportSelector {
             return param;
         }
 
-        public static EnableType getByValue(String value) {
-            return Arrays.stream(values()).filter(_enum -> _enum.getValue().equals(value)).findFirst().orElseGet(() -> null);
+        public static  EnableType getTypeByValue(String value){
+            EnableType[] types = values();
+            for (EnableType type : types) {
+                if (type.getValue().equals(value)){
+                    return type;
+                }
+            }
+            return null;
         }
     }
     
@@ -68,7 +73,7 @@ public abstract class ConfigurationImportSelector implements ImportSelector {
     **/
     private boolean isEnable(EnableType enableType) {
         try {
-            return StringUtils.isEmpty(System.getProperty(enableType.getParam())) ? true : Boolean.valueOf(System.getProperty(enableType.getParam()));
+            return StringUtils.isEmpty(System.getProperty(enableType.getParam())) || Boolean.parseBoolean(System.getProperty(enableType.getParam()));
         } catch (Exception e) {
             return true;
         }
