@@ -1,5 +1,12 @@
 package com.example.common.constant;
 
+import com.example.common.exception.BaseExceotionEnum;
+import com.example.common.exception.BaseException;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
+
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -115,8 +122,29 @@ public class EnvironmentManager {
     public static final String DUBBO_CAT_SERVER_APPLICATION_CONFIG_NAME = "serverApplicationName";
 
 
+    //应用相关信息配置
+    private static final String APP_PROPERTIES_CLASSPATH = "/META-INF/app.properties";
+    private static final String APP_PROPERTIES_KEY = "app.id";
+    private static final String APP_PROPERTIES_ENV_PATH = "classpath*:META-INF/example/env-*.properties";
+    private static final String APP_PROPERTIES_ENV_PATH_SUFFIX = ".properties";
+
     private static Properties properties;
     private static final Map<String, Properties> PROPERTIES_MAP = new HashMap<>();
+
+    static {
+        ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        try {
+            Resource[] resources = resolver.getResources(APP_PROPERTIES_ENV_PATH);
+            for (Resource resource : resources) {
+                Properties prop = new Properties();
+                prop.load(resource.getInputStream());
+                PROPERTIES_MAP.put(getEnv(), prop);
+            }
+        } catch (IOException e) {
+            throw new BaseException(BaseExceotionEnum.RESOURCE_LOAD_ERROR.getCode(), BaseExceotionEnum.RESOURCE_LOAD_ERROR.getMessage(), false);
+        }
+
+    }
 
     /**
     *@Description 
