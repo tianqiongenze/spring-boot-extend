@@ -5,7 +5,7 @@ import com.example.common.exception.BaseException;
 import com.example.common.utils.ConfigurationLoadUtil;
 import com.example.mybatis.properties.MyBatisConfigurationProperties;
 import com.example.mybatis.utils.MyBatisConfigurationLoadUtil;
-import com.example.mybatis.utils.PluginConfigManager;
+import com.example.common.config.PluginConfigManager;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.apache.ibatis.plugin.Interceptor;
