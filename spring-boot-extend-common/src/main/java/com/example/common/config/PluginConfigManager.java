@@ -1,4 +1,4 @@
-package com.example.mybatis.utils;
+package com.example.common.config;
 
 import com.example.common.exception.BaseException;
 import org.springframework.core.io.Resource;
