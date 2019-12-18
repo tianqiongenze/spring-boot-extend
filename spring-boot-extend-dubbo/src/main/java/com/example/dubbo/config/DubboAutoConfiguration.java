@@ -14,6 +14,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
@@ -32,6 +33,9 @@ import static com.example.common.exception.BaseExceotionEnum.INITIALIZE_FILTER_E
 public class DubboAutoConfiguration implements BeanDefinitionRegistryPostProcessor, EnvironmentAware {
 
     private ConfigurableEnvironment env;
+    private Set<String> filterList;
+    private  ApplicationContext applicationContext;
+
 
     private static final Logger logger = LoggerFactory.getLogger(DubboAutoConfiguration.class);
 
@@ -81,6 +85,7 @@ public class DubboAutoConfiguration implements BeanDefinitionRegistryPostProcess
     **/
     private void initFilter(){
         Set<String> propertyValueSet = PluginConfigManager.getPropertyValueSet(Filter.class.getName());
+        filterList.addAll(propertyValueSet);
         propertyValueSet.forEach( value -> {
             try {
                 Filter filter = (Filter) Class.forName(value).newInstance();
