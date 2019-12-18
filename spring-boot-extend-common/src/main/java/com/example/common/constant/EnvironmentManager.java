@@ -5,10 +5,9 @@ import com.example.common.exception.BaseException;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -125,42 +124,72 @@ public class EnvironmentManager {
     //应用相关信息配置
     private static final String APP_PROPERTIES_CLASSPATH = "/META-INF/app.properties";
     private static final String APP_PROPERTIES_KEY = "app.id";
-    private static final String APP_PROPERTIES_ENV_PATH = "classpath*:META-INF/example/env-*.properties";
+    private static final String APP_PROPERTIES_ENV_PATH = "classpath*:META-INF/example/env-[%s].properties";
     private static final String APP_PROPERTIES_ENV_PATH_SUFFIX = ".properties";
 
     private static Properties properties;
-    private static final Map<String, Properties> PROPERTIES_MAP = new HashMap<>();
+    private static String appid;
 
+    //加载环境配置参数
     static {
         ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         try {
-            Resource[] resources = resolver.getResources(APP_PROPERTIES_ENV_PATH);
-            for (Resource resource : resources) {
-                Properties prop = new Properties();
-                prop.load(resource.getInputStream());
-                PROPERTIES_MAP.put(getEnv(), prop);
-            }
+            Resource resource = resolver.getResource(String.format(APP_PROPERTIES_ENV_PATH, getEnv()));
+            properties.load(resource.getInputStream());
         } catch (IOException e) {
-            throw new BaseException(BaseExceotionEnum.RESOURCE_LOAD_ERROR.getCode(), BaseExceotionEnum.RESOURCE_LOAD_ERROR.getMessage(), false);
+            throw new BaseException(e, BaseExceotionEnum.RESOURCE_LOAD_ERROR.getCode(), BaseExceotionEnum.RESOURCE_LOAD_ERROR.getMessage(), false);
         }
 
     }
 
+    //加载appid
+    static {
+        ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        try {
+            Resource resource = resolver.getResource(APP_PROPERTIES_CLASSPATH);
+            Properties prop = new Properties();
+            prop.load(resource.getInputStream());
+            appid = prop.getProperty(APP_PROPERTIES_KEY);
+        } catch (IOException e) {
+            throw new BaseException(e, BaseExceotionEnum.RESOURCE_LOAD_ERROR.getCode(), BaseExceotionEnum.RESOURCE_LOAD_ERROR.getMessage(), false);
+        }
+    }
+
     /**
-    *@Description 
+    *@Description 设置属性
     *@Param [key, value]
     *@Author mingj
     *@Date 2019/12/16 23:25
     *@Return void
     **/
     public static void setProperty(String key, String value) {
-        if (properties == null) {
-            properties = PROPERTIES_MAP.get(getEnv());
-            if (properties == null) {
-                properties = new Properties();
-            }
-        }
         properties.setProperty(key, value);
+    }
+
+    /**
+    *@Description 获取属性
+    *@Param [key]
+    *@Author mingj
+    *@Date 2019/12/18 23:07
+    *@Return java.lang.String
+    **/
+    public static String getProperty(String key) {
+        return properties.getProperty(key);
+    }
+
+    /**
+    *@Description 获取带默认值的属性
+    *@Param [key, defaultValue]
+    *@Author mingj
+    *@Date 2019/12/18 23:22
+    *@Return java.lang.String
+    **/
+    public static String getProperty(String key, String defaultValue) {
+        String value = properties.getProperty(key);
+        if (StringUtils.isEmpty(value)){
+            return defaultValue;
+        }
+        return value;
     }
 
     /**
@@ -173,5 +202,22 @@ public class EnvironmentManager {
     private static String getEnv() {
         final String env = System.getProperty("env");
         return env == null ? "dev" : env;
+    }
+
+    /**
+    *@Description 获取appid信息
+    *@Param []
+    *@Author mingj
+    *@Date 2019/12/18 22:11
+    *@Return java.lang.String
+    **/
+    public static String getAppid() {
+        if (StringUtils.isEmpty(appid)){
+            String property = System.getProperty(APP_PROPERTIES_KEY);
+            if (!StringUtils.isEmpty(property)){
+                return property;
+            }
+        }
+        return appid;
     }
 }
