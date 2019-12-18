@@ -9,7 +9,8 @@ package com.example.common.exception;
  **/
 public enum BaseExceotionEnum {
 
-    RESOURCE_LOAD_ERROR("ERR_001", "资源文件加载失败")
+    RESOURCE_LOAD_ERROR("ERR_001", "资源文件加载失败"),
+    INITIALIZE_FILTER_ERROR("ERR_002", "Dubbo过滤器初始化失败")
     ;
 
     private String code;
