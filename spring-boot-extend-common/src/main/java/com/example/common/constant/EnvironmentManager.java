@@ -137,7 +137,7 @@ public class EnvironmentManager {
             Resource resource = resolver.getResource(String.format(APP_PROPERTIES_ENV_PATH, getEnv()));
             properties.load(resource.getInputStream());
         } catch (IOException e) {
-            throw new BaseException(e, BaseExceotionEnum.RESOURCE_LOAD_ERROR.getCode(), BaseExceotionEnum.RESOURCE_LOAD_ERROR.getMessage(), false);
+            throw new BaseException(e, BaseExceotionEnum.RESOURCE_LOAD_ERROR.getCode(), BaseExceotionEnum.RESOURCE_LOAD_ERROR.getMessage(), BaseExceotionEnum.RESOURCE_LOAD_ERROR.getStatus());
         }
 
     }
@@ -151,7 +151,7 @@ public class EnvironmentManager {
             prop.load(resource.getInputStream());
             appid = prop.getProperty(APP_PROPERTIES_KEY);
         } catch (IOException e) {
-            throw new BaseException(e, BaseExceotionEnum.RESOURCE_LOAD_ERROR.getCode(), BaseExceotionEnum.RESOURCE_LOAD_ERROR.getMessage(), false);
+            throw new BaseException(e, BaseExceotionEnum.RESOURCE_LOAD_ERROR.getCode(), BaseExceotionEnum.RESOURCE_LOAD_ERROR.getMessage(), BaseExceotionEnum.RESOURCE_LOAD_ERROR.getStatus());
         }
     }
 
