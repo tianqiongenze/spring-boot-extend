@@ -124,7 +124,7 @@ public class EnvironmentManager {
     //应用相关信息配置
     private static final String APP_PROPERTIES_CLASSPATH = "/META-INF/app.properties";
     private static final String APP_PROPERTIES_KEY = "app.id";
-    private static final String APP_PROPERTIES_ENV_PATH = "classpath*:META-INF/example/env-[%s].properties";
+    private static final String APP_PROPERTIES_ENV_PATH = "/META-INF/example/env-%s.properties";
     private static final String APP_PROPERTIES_ENV_PATH_SUFFIX = ".properties";
 
     private static Properties properties;
@@ -133,6 +133,7 @@ public class EnvironmentManager {
     //加载环境配置参数
     static {
         ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        properties = new Properties();
         try {
             Resource resource = resolver.getResource(String.format(APP_PROPERTIES_ENV_PATH, getEnv()));
             properties.load(resource.getInputStream());
