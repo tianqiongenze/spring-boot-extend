@@ -15,7 +15,13 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
+import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
@@ -31,7 +37,8 @@ import java.util.Set;
  * @Author mingj
  * @Date 2019/12/16 23:17
  **/
-public class DubboAutoConfiguration implements BeanDefinitionRegistryPostProcessor, EnvironmentAware {
+@EnableAutoConfiguration(exclude = {MongoAutoConfiguration.class, MongoDataAutoConfiguration.class, DataSourceAutoConfiguration.class, DataSourceTransactionManagerAutoConfiguration.class})
+public class DubboAutoConfiguration implements ApplicationContextAware, BeanDefinitionRegistryPostProcessor, EnvironmentAware {
 
     private ConfigurableEnvironment env;
     private Set<String> filterList;
@@ -119,6 +126,7 @@ public class DubboAutoConfiguration implements BeanDefinitionRegistryPostProcess
     *@Return void
     **/
     private void initFilter(){
+        filterList = new HashSet<>();
         Set<String> propertyValueSet = PluginConfigManager.getPropertyValueSet(Filter.class.getName());
         filterList.addAll(propertyValueSet);
         propertyValueSet.forEach( value -> {
@@ -140,7 +148,7 @@ public class DubboAutoConfiguration implements BeanDefinitionRegistryPostProcess
     **/
     private void registerAnnodationBean(BeanDefinitionRegistry beanDefinitionRegistry) {
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(AnnotationBean.class);
-        builder.addPropertyValue("annotationPackage", EnvironmentManager.getProperty(EnvironmentManager.DUBBO_SCAN_PACKAGE_NAME));
+        builder.addPropertyValue("package", EnvironmentManager.getProperty(EnvironmentManager.DUBBO_SCAN_PACKAGE_NAME));
         builder.addPropertyValue("applicationContext", applicationContext);
         beanDefinitionRegistry.registerBeanDefinition("annotationBean", builder.getRawBeanDefinition());
     }
@@ -182,4 +190,8 @@ public class DubboAutoConfiguration implements BeanDefinitionRegistryPostProcess
         beanDefinitionRegistry.registerBeanDefinition("providerConfig", builder.getRawBeanDefinition());
     }
 
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
 }
