@@ -2,6 +2,7 @@ package com.example.common.constant;
 
 import com.example.common.exception.BaseExceotionEnum;
 import com.example.common.exception.BaseException;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
@@ -174,7 +175,11 @@ public class EnvironmentManager {
     *@Date 2019/12/18 23:07
     *@Return java.lang.String
     **/
-    public static String getProperty(String key) {
+    public static String getProperty(ConfigurableEnvironment env, String key) {
+        String property = env.getProperty(key);
+        if (!StringUtils.isEmpty(property)){
+            return property;
+        }
         return properties.getProperty(key);
     }
 
@@ -185,8 +190,8 @@ public class EnvironmentManager {
     *@Date 2019/12/18 23:22
     *@Return java.lang.String
     **/
-    public static String getProperty(String key, String defaultValue) {
-        String value = properties.getProperty(key);
+    public static String getProperty(ConfigurableEnvironment env, String key, String defaultValue) {
+        String value = getProperty(env, key);
         if (StringUtils.isEmpty(value)){
             return defaultValue;
         }

@@ -56,16 +56,16 @@ public class DubboAutoConfiguration implements ApplicationContextAware, BeanDefi
         //加载配置参数
         ApplicationConfig config = new ApplicationConfig();
         config.setName(EnvironmentManager.getAppid());
-        config.setLogger(EnvironmentManager.getProperty(EnvironmentManager.DUBBO_LOGGER));
+        config.setLogger(getProperty(EnvironmentManager.DUBBO_LOGGER));
 
         ProtocolConfig protocolConfig = new ProtocolConfig();
-        protocolConfig.setName(EnvironmentManager.getProperty(EnvironmentManager.DUBBO_PROTOCOL));
-        protocolConfig.setHost(EnvironmentManager.getProperty(EnvironmentManager.DUBBO_HOST));
-        protocolConfig.setPort(Integer.valueOf(EnvironmentManager.getProperty(EnvironmentManager.DUBBO_HOST, "20880")));
+        protocolConfig.setName(getProperty(EnvironmentManager.DUBBO_PROTOCOL));
+        protocolConfig.setHost(getProperty(EnvironmentManager.DUBBO_HOST));
+        protocolConfig.setPort(Integer.valueOf(getProperty(EnvironmentManager.DUBBO_HOST, "20880")));
 
         RegistryConfig registryConfig = new RegistryConfig();
-        registryConfig.setProtocol(EnvironmentManager.getProperty(EnvironmentManager.DUBBO_PROTOCOL, "zookeeper"));
-        registryConfig.setAddress(EnvironmentManager.getProperty(EnvironmentManager.DUBBO_REGISTRY_ADDRESS));
+        registryConfig.setProtocol(getProperty(EnvironmentManager.DUBBO_PROTOCOL, "zookeeper"));
+        registryConfig.setAddress(getProperty(EnvironmentManager.DUBBO_REGISTRY_ADDRESS));
         registryConfig.setRegister(true);
         registryConfig.setSubscribe(true);
 
@@ -148,7 +148,7 @@ public class DubboAutoConfiguration implements ApplicationContextAware, BeanDefi
     **/
     private void registerAnnodationBean(BeanDefinitionRegistry beanDefinitionRegistry) {
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(AnnotationBean.class);
-        builder.addPropertyValue("package", EnvironmentManager.getProperty(EnvironmentManager.DUBBO_SCAN_PACKAGE_NAME));
+        builder.addPropertyValue("package", getProperty(EnvironmentManager.DUBBO_SCAN_PACKAGE_NAME));
         builder.addPropertyValue("applicationContext", applicationContext);
         beanDefinitionRegistry.registerBeanDefinition("annotationBean", builder.getRawBeanDefinition());
     }
@@ -162,8 +162,8 @@ public class DubboAutoConfiguration implements ApplicationContextAware, BeanDefi
     **/
     private void regisgerConsumerConfigBean(ApplicationConfig config, RegistryConfig registryConfig, BeanDefinitionRegistry beanDefinitionRegistry) {
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(ConsumerConfig.class);
-        builder.addPropertyValue("timeout", Integer.valueOf(EnvironmentManager.getProperty(EnvironmentManager.DUBBO_TIMEOUT)));
-        builder.addPropertyValue("retries", Integer.valueOf(EnvironmentManager.getProperty(EnvironmentManager.DUBBO_RETRIES)));
+        builder.addPropertyValue("timeout", Integer.valueOf(getProperty(EnvironmentManager.DUBBO_TIMEOUT)));
+        builder.addPropertyValue("retries", Integer.valueOf(getProperty(EnvironmentManager.DUBBO_RETRIES)));
         builder.addPropertyValue("application", config);
         builder.addPropertyValue("registries", Collections.singletonList(registryConfig));
         builder.addPropertyValue("filter", String.join(",", getConsumerFilter()));
@@ -180,9 +180,9 @@ public class DubboAutoConfiguration implements ApplicationContextAware, BeanDefi
     **/
     private void registerProviderCondfigBean(ApplicationConfig config, ProtocolConfig protocolConfig, RegistryConfig registryConfig, BeanDefinitionRegistry beanDefinitionRegistry) {
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(ProviderConfig.class);
-        builder.addPropertyValue("timeout", Integer.valueOf(EnvironmentManager.getProperty(EnvironmentManager.DUBBO_TIMEOUT)));
-        builder.addPropertyValue("retries", Integer.valueOf(EnvironmentManager.getProperty(EnvironmentManager.DUBBO_RETRIES)));
-        builder.addPropertyValue("delay", Integer.valueOf(EnvironmentManager.getProperty(EnvironmentManager.DUBBO_DELAY)));
+        builder.addPropertyValue("timeout", Integer.valueOf(getProperty(EnvironmentManager.DUBBO_TIMEOUT)));
+        builder.addPropertyValue("retries", Integer.valueOf(getProperty(EnvironmentManager.DUBBO_RETRIES)));
+        builder.addPropertyValue("delay", Integer.valueOf(getProperty(EnvironmentManager.DUBBO_DELAY)));
         builder.addPropertyValue("application", config);
         builder.addPropertyValue("protocols", Collections.singletonList(protocolConfig));
         builder.addPropertyValue("registries", Collections.singletonList(registryConfig));
@@ -193,5 +193,27 @@ public class DubboAutoConfiguration implements ApplicationContextAware, BeanDefi
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
+    }
+
+    /**
+    *@Description 读取配置参数
+    *@Param [key]
+    *@Author mingj
+    *@Date 2019/12/25 20:01
+    *@Return java.lang.String
+    **/
+    private String getProperty(String key){
+        return EnvironmentManager.getProperty(env, key);
+    }
+
+    /**
+    *@Description 携带默认值
+    *@Param [key, defaultValue]
+    *@Author mingj
+    *@Date 2019/12/25 20:57
+    *@Return java.lang.String
+    **/
+    private String getProperty(String key, String defaultValue){
+        return EnvironmentManager.getProperty(env, key, defaultValue);
     }
 }
