@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * @version 1.0
@@ -13,7 +14,7 @@ import javax.validation.constraints.NotNull;
  * @Date 2019/12/22 17:37
  **/
 @Data
-public class PageRequest {
+public class PageRequest implements Serializable {
 
     private static final long serialVersionUID = -3248514679380897154L;
 

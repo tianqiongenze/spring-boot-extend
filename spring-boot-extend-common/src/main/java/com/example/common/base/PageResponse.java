@@ -2,6 +2,7 @@ package com.example.common.base;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -12,7 +13,9 @@ import java.util.List;
  * @Date 2019/12/22 17:54
  **/
 @Data
-public class PageResponse<T> {
+public class PageResponse<T> implements Serializable {
+
+    private static final long serialVersionUID = 6129989286674298774L;
 
     private int pageNo;
 

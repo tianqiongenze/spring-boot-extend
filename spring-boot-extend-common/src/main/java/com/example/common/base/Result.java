@@ -2,6 +2,8 @@ package com.example.common.base;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * @version 1.0
  * @ClassName Result
@@ -10,7 +12,10 @@ import lombok.Data;
  * @Date 2019/12/22 17:57
  **/
 @Data
-public class Result<T> {
+public class Result<T> implements Serializable {
+
+    private static final long serialVersionUID = 5528832160156012220L;
+
     private boolean status;
 
     private String message;
