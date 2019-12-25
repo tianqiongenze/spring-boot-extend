@@ -21,6 +21,7 @@
         <commons-lang3.version>3.5</commons-lang3.version>
         <dubbo.version>2.6.4</dubbo.version>
         <curator-framework.version>2.12.0</curator-framework.version>
+        <netty-all.version>4.1.43.Final</netty-all.version>
     </properties>
 
     <modules>
@@ -45,6 +46,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>${netty-all.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
