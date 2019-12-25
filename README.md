@@ -19,7 +19,7 @@
     *  Dubbo官方文档[Dubbo](http://dubbo.apache.org/)
 
 ## 有问题反馈
-在使用中有任何问题，欢迎反馈给我，可以用以下联系方式跟我交流，也可以提交issiue
+在使用中有任何问题，欢迎反馈给我，可以用以下联系方式跟我交流
 * Email: mingjay0601@163.com
 * QQ: 704714211
 * 微博: [@如烟啊我是_](https://weibo.com/2849671144/profile?rightmod=1&wvr=6&mod=personinfo&is_all=1)
