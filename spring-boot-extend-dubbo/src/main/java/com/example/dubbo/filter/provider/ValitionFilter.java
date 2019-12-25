@@ -1,4 +1,4 @@
-package com.example.dubbo.filter;
+package com.example.dubbo.filter.provider;
 
 import com.alibaba.dubbo.rpc.*;
 import com.alibaba.fastjson.JSON;
