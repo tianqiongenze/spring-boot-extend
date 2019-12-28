@@ -3,9 +3,6 @@ package com.example.dubbo.config;
 import com.alibaba.dubbo.common.extension.ExtensionLoader;
 import com.alibaba.dubbo.config.*;
 import com.alibaba.dubbo.config.spring.AnnotationBean;
-import com.alibaba.dubbo.config.spring.beans.factory.annotation.ReferenceAnnotationBeanPostProcessor;
-import com.alibaba.dubbo.config.spring.beans.factory.annotation.ServiceAnnotationBeanPostProcessor;
-import com.alibaba.dubbo.config.spring.util.BeanRegistrar;
 import com.alibaba.dubbo.rpc.Filter;
 import com.example.common.config.PluginConfigManager;
 import com.example.common.constant.EnvironmentManager;
@@ -14,7 +11,6 @@ import com.example.common.exception.BaseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -27,14 +23,9 @@ import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.EnvironmentAware;
-import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.core.io.support.ResourcePatternResolver;
-import org.springframework.core.io.support.ResourcePatternUtils;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -79,25 +70,7 @@ public class DubboAutoConfiguration implements ApplicationContextAware, BeanDefi
 
         registerProviderCondfigBean(config, protocolConfig, registryConfig, beanDefinitionRegistry);
         registerConsumerConfigBean(config, registryConfig, beanDefinitionRegistry);
-        registerDubboScanPackage(beanDefinitionRegistry);
-    }
-
-    /**
-    *@Description dubbo扫描器
-    *@Param [beanDefinitionRegistry]
-    *@Author mingj
-    *@Date 2019/12/27 13:44
-    *@Return void
-    **/
-    private void registerDubboScanPackage(BeanDefinitionRegistry beanDefinitionRegistry) {
-        BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(ServiceAnnotationBeanPostProcessor.class);
-        String[] packname = getProperty(EnvironmentManager.DUBBO_SCAN_PACKAGE_NAME).split(",");
-        builder.addConstructorArgValue(packname);
-        builder.addPropertyValue("environment", env);
-        builder.addPropertyValue("resourceLoader", applicationContext);
-        builder.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
-        beanDefinitionRegistry.registerBeanDefinition("serviceAnnotationBeanPostProcessor", builder.getRawBeanDefinition());
-        BeanRegistrar.registerInfrastructureBean(beanDefinitionRegistry, ReferenceAnnotationBeanPostProcessor.BEAN_NAME, ReferenceAnnotationBeanPostProcessor.class);
+        registerAnnodationBean(beanDefinitionRegistry);
     }
 
     @Override

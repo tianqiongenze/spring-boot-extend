@@ -23,5 +23,5 @@ public @interface EnableDubboConfiguration {
 
     String protocol() default "dubbo";
 
-    String[] scanPackageName() default {"com.example"};
+    String scanPackageName() default "com.example";
 }
