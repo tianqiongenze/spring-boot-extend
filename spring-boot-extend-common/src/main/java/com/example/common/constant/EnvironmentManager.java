@@ -115,12 +115,8 @@ public class EnvironmentManager {
     public static final String DUBBO_TIMEOUT = "dubbo.timeout";
     public static final String DUBBO_RETRIES = "dubbo.retries";
     public static final String DUBBO_DELAY = "dubbo.delay";
-    public static final String DUBBO_REGISTRY_PROTOCOL = "dubbo.registryProtocol";
     public static final String DUBBO_REGISTRY_ADDRESS = "dubbo.registryAddress";
-    public static final String DUBBO_SCAN_PACKAGE_NAME = "dubbo.scanPackageName";
     public static final String DUBBO_ENV_CONFIG_NAME = "dubbo.env.name";
-    public static final String DUBBO_CAT_SERVER_APPLICATION_CONFIG_NAME = "serverApplicationName";
-
 
     //应用相关信息配置
     private static final String APP_PROPERTIES_CLASSPATH = "/META-INF/app.properties";
