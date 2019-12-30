@@ -1,7 +1,9 @@
 package com.example.dubbo.annodation;
 
+import com.alibaba.dubbo.config.spring.context.annotation.DubboComponentScan;
 import com.example.dubbo.config.EnableDubboImportSelector;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.*;
 
@@ -16,6 +18,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
+@DubboComponentScan
 @Import({EnableDubboImportSelector.class})
 public @interface EnableDubboConfiguration {
 
@@ -23,5 +26,6 @@ public @interface EnableDubboConfiguration {
 
     String protocol() default "dubbo";
 
-    String scanPackageName() default "com.example";
+    @AliasFor(annotation = DubboComponentScan.class, attribute = "basePackages")
+    String[] scanPackageName() default {"com.example"};
 }

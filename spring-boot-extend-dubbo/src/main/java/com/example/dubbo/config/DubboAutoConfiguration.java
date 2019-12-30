@@ -38,11 +38,10 @@ import java.util.Set;
  * @Date 2019/12/16 23:17
  **/
 @EnableAutoConfiguration(exclude = {MongoAutoConfiguration.class, MongoDataAutoConfiguration.class, DataSourceAutoConfiguration.class, DataSourceTransactionManagerAutoConfiguration.class})
-public class DubboAutoConfiguration implements ApplicationContextAware, BeanDefinitionRegistryPostProcessor, EnvironmentAware {
+public class DubboAutoConfiguration implements BeanDefinitionRegistryPostProcessor, EnvironmentAware {
 
     private ConfigurableEnvironment env;
     private Set<String> filterList;
-    private  ApplicationContext applicationContext;
 
     private static final Logger logger = LoggerFactory.getLogger(DubboAutoConfiguration.class);
 
@@ -63,14 +62,13 @@ public class DubboAutoConfiguration implements ApplicationContextAware, BeanDefi
         protocolConfig.setPort(Integer.valueOf(getProperty(EnvironmentManager.DUBBO_HOST, "20880")));
 
         RegistryConfig registryConfig = new RegistryConfig();
-        registryConfig.setProtocol(getProperty(EnvironmentManager.DUBBO_PROTOCOL, "zookeeper"));
+        registryConfig.setProtocol(getProperty(EnvironmentManager.DUBBO_PROTOCOL));
         registryConfig.setAddress(getProperty(EnvironmentManager.DUBBO_REGISTRY_ADDRESS));
         registryConfig.setRegister(true);
         registryConfig.setSubscribe(true);
 
         registerProviderCondfigBean(config, protocolConfig, registryConfig, beanDefinitionRegistry);
         registerConsumerConfigBean(config, registryConfig, beanDefinitionRegistry);
-        registerAnnodationBean(beanDefinitionRegistry);
     }
 
     @Override
@@ -139,20 +137,6 @@ public class DubboAutoConfiguration implements ApplicationContextAware, BeanDefi
     }
 
     /**
-    *@Description 注册
-    *@Param [beanDefinitionRegistry]
-    *@Author mingj
-    *@Date 2019/12/22 17:12
-    *@Return void
-    **/
-    private void registerAnnodationBean(BeanDefinitionRegistry beanDefinitionRegistry) {
-        BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(AnnotationBean.class);
-        builder.addPropertyValue("package", getProperty(EnvironmentManager.DUBBO_SCAN_PACKAGE_NAME));
-        builder.addPropertyValue("applicationContext", applicationContext);
-        beanDefinitionRegistry.registerBeanDefinition("annotationBean", builder.getRawBeanDefinition());
-    }
-    
-    /**
     *@Description 消费端注册
     *@Param [config, registryConfig, beanDefinitionRegistry]
     *@Author mingj
@@ -187,11 +171,6 @@ public class DubboAutoConfiguration implements ApplicationContextAware, BeanDefi
         builder.addPropertyValue("registries", Collections.singletonList(registryConfig));
         builder.addPropertyValue("filter", String.join(",", getProviderFilter()));
         beanDefinitionRegistry.registerBeanDefinition("providerConfig", builder.getRawBeanDefinition());
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
     }
 
     /**

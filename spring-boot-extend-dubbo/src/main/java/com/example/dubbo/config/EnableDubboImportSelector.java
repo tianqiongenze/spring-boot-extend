@@ -21,15 +21,11 @@ public class EnableDubboImportSelector extends ConfigurationImportSelector {
         AnnotationAttributes attributes = AnnotationAttributes.fromMap(importingClassMetadata.getAnnotationAttributes(EnableDubboConfiguration.class.getName()));
         String port = attributes.getString("port");
         String protocol = attributes.getString("protocol");
-        String scanPackageName = attributes.getString("scanPackageName");
         if(!StringUtils.isEmpty(port)) {
             EnvironmentManager.setProperty(EnvironmentManager.DUBBO_PORT, port);
         }
         if(!StringUtils.isEmpty(protocol)) {
             EnvironmentManager.setProperty(EnvironmentManager.DUBBO_PROTOCOL, protocol);
-        }
-        if(!StringUtils.isEmpty(scanPackageName)) {
-            EnvironmentManager.setProperty(EnvironmentManager.DUBBO_SCAN_PACKAGE_NAME, scanPackageName);
         }
         return new String[]{DubboAutoConfiguration.class.getName()};
     }
