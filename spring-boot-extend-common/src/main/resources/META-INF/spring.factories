@@ -1,1 +1,6 @@
-org.springframework.context.ApplicationListener=com.example.common.listener.ApplicationBannarListener
+org.springframework.context.ApplicationListener=com.example.common.listener.ApplicationEnvironmentPreparedEventListener,\
+  com.example.common.listener.ApplicationFailedEventListener,\
+  com.example.common.listener.ApplicationPreparedEventListener,\
+  com.example.common.listener.ApplicationReadyEventListener,\
+  com.example.common.listener.ApplicationStartedEventListener,\
+  com.example.common.listener.ApplicationCloseEventListener

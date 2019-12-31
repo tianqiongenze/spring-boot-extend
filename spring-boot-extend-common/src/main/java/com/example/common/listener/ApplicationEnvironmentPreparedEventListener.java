@@ -15,9 +15,9 @@ import java.util.Properties;
  * @Author mingj
  * @Date 2019/12/31 9:23
  **/
-public class ApplicationBannarListener implements ApplicationListener<ApplicationEnvironmentPreparedEvent> {
+public class ApplicationEnvironmentPreparedEventListener implements ApplicationListener<ApplicationEnvironmentPreparedEvent> {
 
-    private static final Logger logger = LoggerFactory.getLogger(ApplicationBannarListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(ApplicationEnvironmentPreparedEventListener.class);
 
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
     private static final String PATH = "/META-INF/maven/com.example/spring-boot-extend-common/pom.properties";
@@ -64,7 +64,7 @@ public class ApplicationBannarListener implements ApplicationListener<Applicatio
         String version= null;
         try {
             Properties properties = new Properties();
-            properties.load(ApplicationBannarListener.class.getResourceAsStream(PATH));
+            properties.load(ApplicationEnvironmentPreparedEventListener.class.getResourceAsStream(PATH));
             version = properties.getProperty("version");
         }catch (Exception e){
         }
