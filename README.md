@@ -43,4 +43,4 @@
 * 修改apollo注册中心为zookeeper
 * 引入hystrix组件
 * 动态数据源变更
-* 动态日志变更
+* 动态日志变更  **(Done)**
