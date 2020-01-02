@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * @version 1.0
- * @ClassName MyApplicationStartedEvent
+ * @ClassName ApplicationStartedEventListener
  * @Description TODO描述
  * @Author mingj
  * @Date 2019/12/30 17:39

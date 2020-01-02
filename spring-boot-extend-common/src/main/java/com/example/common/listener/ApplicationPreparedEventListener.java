@@ -7,7 +7,7 @@ import org.springframework.context.ApplicationListener;
 
 /**
  * @version 1.0
- * @ClassName MyApplicationPreparedEvent
+ * @ClassName ApplicationPreparedEventListener
  * @Description TODO描述
  * @Author mingj
  * @Date 2019/12/30 17:38

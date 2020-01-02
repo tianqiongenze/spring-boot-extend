@@ -8,7 +8,7 @@ import org.springframework.context.ApplicationListener;
 
 /**
  * @version 1.0
- * @ClassName ApplicationLoadCompleteListener
+ * @ClassName ApplicationReadyEventListener
  * @Description 应用加载完成监听器
  * @Author mingj
  * @Date 2019/12/31 14:29
