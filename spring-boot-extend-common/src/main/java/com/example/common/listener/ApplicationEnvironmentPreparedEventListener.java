@@ -10,7 +10,7 @@ import java.util.Properties;
 
 /**
  * @version 1.0
- * @ClassName ApplicationBannarListen
+ * @ClassName ApplicationEnvironmentPreparedEventListener
  * @Description bannar信息
  * @Author mingj
  * @Date 2019/12/31 9:23
