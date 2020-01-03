@@ -49,7 +49,7 @@ public class DubboAutoConfiguration implements BeanDefinitionRegistryPostProcess
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry beanDefinitionRegistry) throws BeansException {
         //初始化过滤器
-        initFilter();
+//        initFilter();
 
         //加载配置参数
         ApplicationConfig config = new ApplicationConfig();
@@ -149,10 +149,9 @@ public class DubboAutoConfiguration implements BeanDefinitionRegistryPostProcess
         builder.addPropertyValue("retries", Integer.valueOf(getProperty(EnvironmentManager.DUBBO_RETRIES)));
         builder.addPropertyValue("application", config);
         builder.addPropertyValue("registries", Collections.singletonList(registryConfig));
-        builder.addPropertyValue("filter", String.join(",", getConsumerFilter()));
+//        builder.addPropertyValue("filter", String.join(",", getConsumerFilter()));
         beanDefinitionRegistry.registerBeanDefinition("consumerConfig", builder.getRawBeanDefinition());
     }
-
 
     /**
     *@Description 服务端注册
@@ -169,7 +168,7 @@ public class DubboAutoConfiguration implements BeanDefinitionRegistryPostProcess
         builder.addPropertyValue("application", config);
         builder.addPropertyValue("protocols", Collections.singletonList(protocolConfig));
         builder.addPropertyValue("registries", Collections.singletonList(registryConfig));
-        builder.addPropertyValue("filter", String.join(",", getProviderFilter()));
+//        builder.addPropertyValue("filter", String.join(",", getProviderFilter()));
         beanDefinitionRegistry.registerBeanDefinition("providerConfig", builder.getRawBeanDefinition());
     }
 

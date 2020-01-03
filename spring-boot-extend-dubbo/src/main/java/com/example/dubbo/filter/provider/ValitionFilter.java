@@ -1,5 +1,7 @@
 package com.example.dubbo.filter.provider;
 
+import com.alibaba.dubbo.common.Constants;
+import com.alibaba.dubbo.common.extension.Activate;
 import com.alibaba.dubbo.rpc.*;
 import com.alibaba.fastjson.JSON;
 import com.example.common.utils.ResultUtil;
@@ -15,7 +17,7 @@ import org.slf4j.LoggerFactory;
  * @Author mingj
  * @Date 2018/10/31 10:07
  **/
-
+@Activate(group = Constants.PROVIDER)
 public class ValitionFilter implements Filter {
 
     private static final Logger logger = LoggerFactory.getLogger(ValitionFilter.class);
