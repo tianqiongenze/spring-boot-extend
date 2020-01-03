@@ -115,6 +115,7 @@ public class EnvironmentManager {
     public static final String DUBBO_TIMEOUT = "dubbo.timeout";
     public static final String DUBBO_RETRIES = "dubbo.retries";
     public static final String DUBBO_DELAY = "dubbo.delay";
+    public static final String DUBBO_REGISTRY_PROTOCOL = "dubbo.registryProtocol";
     public static final String DUBBO_REGISTRY_ADDRESS = "dubbo.registryAddress";
     public static final String DUBBO_ENV_CONFIG_NAME = "dubbo.env.name";
 

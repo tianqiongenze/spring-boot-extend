@@ -18,8 +18,6 @@ import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 
-import java.util.Collections;
-
 /**
  * @version 1.0
  * @ClassName DubboConfiguration
@@ -48,7 +46,7 @@ public class DubboAutoConfiguration implements BeanDefinitionRegistryPostProcess
         protocolConfig.setPort(Integer.valueOf(getProperty(EnvironmentManager.DUBBO_PORT, "20880")));
 
         RegistryConfig registryConfig = new RegistryConfig();
-        registryConfig.setProtocol(getProperty(EnvironmentManager.DUBBO_PROTOCOL));
+        registryConfig.setProtocol(getProperty(EnvironmentManager.DUBBO_REGISTRY_PROTOCOL, "zookeeper"));
         registryConfig.setAddress(getProperty(EnvironmentManager.DUBBO_REGISTRY_ADDRESS));
         registryConfig.setRegister(true);
         registryConfig.setSubscribe(true);
@@ -79,7 +77,7 @@ public class DubboAutoConfiguration implements BeanDefinitionRegistryPostProcess
         builder.addPropertyValue("timeout", Integer.valueOf(getProperty(EnvironmentManager.DUBBO_TIMEOUT)));
         builder.addPropertyValue("retries", Integer.valueOf(getProperty(EnvironmentManager.DUBBO_RETRIES)));
         builder.addPropertyValue("application", config);
-        builder.addPropertyValue("registries", Collections.singletonList(registryConfig));
+        builder.addPropertyValue("registry", registryConfig);
         beanDefinitionRegistry.registerBeanDefinition("consumerConfig", builder.getRawBeanDefinition());
     }
 
@@ -96,8 +94,8 @@ public class DubboAutoConfiguration implements BeanDefinitionRegistryPostProcess
         builder.addPropertyValue("retries", Integer.valueOf(getProperty(EnvironmentManager.DUBBO_RETRIES)));
         builder.addPropertyValue("delay", Integer.valueOf(getProperty(EnvironmentManager.DUBBO_DELAY)));
         builder.addPropertyValue("application", config);
-        builder.addPropertyValue("protocols", Collections.singletonList(protocolConfig));
-        builder.addPropertyValue("registries", Collections.singletonList(registryConfig));
+        builder.addPropertyValue("protocol", protocolConfig);
+        builder.addPropertyValue("registry", registryConfig);
         beanDefinitionRegistry.registerBeanDefinition("providerConfig", builder.getRawBeanDefinition());
     }
 
