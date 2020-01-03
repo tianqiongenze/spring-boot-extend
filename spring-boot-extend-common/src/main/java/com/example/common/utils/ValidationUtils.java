@@ -12,8 +12,8 @@ import java.util.Set;
  **/
 
 public class ValidationUtils {
-    static final ValidatorFactory VFACTORY = Validation.buildDefaultValidatorFactory();
-    static final Validator VALIDATOR = VFACTORY.getValidator();
+    private static final ValidatorFactory VFACTORY = Validation.buildDefaultValidatorFactory();
+    private static final Validator VALIDATOR = VFACTORY.getValidator();
 
     /**
     *@Description 实体类校验
