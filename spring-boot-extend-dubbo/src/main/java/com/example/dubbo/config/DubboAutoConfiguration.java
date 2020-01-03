@@ -1,6 +1,7 @@
 package com.example.dubbo.config;
 
 import com.alibaba.dubbo.config.*;
+import com.alibaba.dubbo.config.spring.AnnotationBean;
 import com.example.common.constant.EnvironmentManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,8 @@ import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfigurat
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
@@ -26,9 +29,10 @@ import org.springframework.core.env.Environment;
  * @Date 2019/12/16 23:17
  **/
 @EnableAutoConfiguration(exclude = {MongoAutoConfiguration.class, MongoDataAutoConfiguration.class, DataSourceAutoConfiguration.class, DataSourceTransactionManagerAutoConfiguration.class})
-public class DubboAutoConfiguration implements BeanDefinitionRegistryPostProcessor, EnvironmentAware {
+public class DubboAutoConfiguration implements BeanDefinitionRegistryPostProcessor, EnvironmentAware, ApplicationContextAware {
 
     private ConfigurableEnvironment env;
+    private ApplicationContext applicationContext;
 
     private static final Logger logger = LoggerFactory.getLogger(DubboAutoConfiguration.class);
 
@@ -53,7 +57,10 @@ public class DubboAutoConfiguration implements BeanDefinitionRegistryPostProcess
 
         registerProviderCondfigBean(config, protocolConfig, registryConfig, beanDefinitionRegistry);
         registerConsumerConfigBean(config, registryConfig, beanDefinitionRegistry);
+        registerAnnotationBean(beanDefinitionRegistry);
     }
+
+
 
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory) throws BeansException {
@@ -100,6 +107,20 @@ public class DubboAutoConfiguration implements BeanDefinitionRegistryPostProcess
     }
 
     /**
+    *@Description 扫描包注解
+    *@Param [beanDefinitionRegistry]
+    *@Author mingj
+    *@Date 2020/1/4 1:38
+    *@Return void
+    **/
+    private void registerAnnotationBean(BeanDefinitionRegistry beanDefinitionRegistry) {
+        BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(AnnotationBean.class);
+        builder.addPropertyValue("package",getProperty(EnvironmentManager.DUBBO_SCAN_PACKNAME));
+        builder.addPropertyValue("applicationContext", applicationContext);
+        beanDefinitionRegistry.registerBeanDefinition("annotationBean", builder.getRawBeanDefinition());
+    }
+
+    /**
     *@Description 读取配置参数
     *@Param [key]
     *@Author mingj
@@ -119,5 +140,10 @@ public class DubboAutoConfiguration implements BeanDefinitionRegistryPostProcess
     **/
     private String getProperty(String key, String defaultValue){
         return EnvironmentManager.getProperty(env, key, defaultValue);
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
     }
 }

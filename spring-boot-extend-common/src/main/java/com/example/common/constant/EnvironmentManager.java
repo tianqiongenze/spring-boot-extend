@@ -117,6 +117,7 @@ public class EnvironmentManager {
     public static final String DUBBO_DELAY = "dubbo.delay";
     public static final String DUBBO_REGISTRY_PROTOCOL = "dubbo.registryProtocol";
     public static final String DUBBO_REGISTRY_ADDRESS = "dubbo.registryAddress";
+    public static final String DUBBO_SCAN_PACKNAME = "dubbo.scanPackName";
     public static final String DUBBO_ENV_CONFIG_NAME = "dubbo.env.name";
 
     //应用相关信息配置
