@@ -23,10 +23,10 @@ public class EnableDubboImportSelector extends ConfigurationImportSelector {
         String protocol = attributes.getString("protocol");
         String packageName = attributes.getString("scanPackageName");
         if(!StringUtils.isEmpty(port)) {
-            EnvironmentManager.setProperty(EnvironmentManager.DUBBO_PORT, port);
+            EnvironmentManager.setProperty(EnvironmentManager.DUBBO__PROTOCOL_PORT, port);
         }
         if(!StringUtils.isEmpty(protocol)) {
-            EnvironmentManager.setProperty(EnvironmentManager.DUBBO_PROTOCOL, protocol);
+            EnvironmentManager.setProperty(EnvironmentManager.DUBBO_PROTOCOL_NAME, protocol);
         }
         if (!StringUtils.isEmpty(packageName)){
             EnvironmentManager.setProperty(EnvironmentManager.DUBBO_SCAN_PACKNAME, packageName);

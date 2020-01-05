@@ -108,15 +108,16 @@ public class EnvironmentManager {
     public static final Boolean MONGODB_DEFAULT_CONFIG_REPOSITORIESENABLED = true;
 
     //dubbo服务配置
-    public static final String DUBBO_PROTOCOL = "dubbo.protocol";
-    public static final String DUBBO_PORT = "dubbo.port";
-    public static final String DUBBO_LOGGER = "dubbo.logger";
-    public static final String DUBBO_HOST = "dubbo.host";
-    public static final String DUBBO_TIMEOUT = "dubbo.timeout";
-    public static final String DUBBO_RETRIES = "dubbo.retries";
-    public static final String DUBBO_DELAY = "dubbo.delay";
-    public static final String DUBBO_REGISTRY_PROTOCOL = "dubbo.registryProtocol";
-    public static final String DUBBO_REGISTRY_ADDRESS = "dubbo.registryAddress";
+    public static final String DUBBO_PROTOCOL_NAME = "dubbo.protocol.name";
+    public static final String DUBBO__PROTOCOL_PORT = "dubbo.protocol.port";
+    public static final String DUBBO_APPLICATION_LOGGER = "dubbo.application.logger";
+    public static final String DUBBO_PROVIDER_TIMEOUT = "dubbo.provider.timeout";
+    public static final String DUBBO_PROVIDER_RETRIES = "dubbo.provider.retries";
+    public static final String DUBBO_RPOVIDER_DELAY = "dubbo.provider.delay";
+    public static final String DUBBO_CONSUMER_TIMEOUT = "dubbo.consumer.timeout";
+    public static final String DUBBO_CONSUMER_RETRIES = "dubbo.consumer.retries";
+    public static final String DUBBO_REGISTRY_PROTOCOL = "dubbo.registry.protocol";
+    public static final String DUBBO_REGISTRY_ADDRESS = "dubbo.registry.address";
     public static final String DUBBO_SCAN_PACKNAME = "dubbo.scanPackName";
     public static final String DUBBO_ENV_CONFIG_NAME = "dubbo.env.name";
 
