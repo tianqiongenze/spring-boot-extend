@@ -9,6 +9,7 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
+import java.util.IllegalFormatException;
 import java.util.Properties;
 
 /**
@@ -148,6 +149,9 @@ public class EnvironmentManager {
             Resource resource = resolver.getResource(APP_PROPERTIES_CLASSPATH);
             properties.load(resource.getInputStream());
             appid = properties.getProperty(APP_PROPERTIES_KEY);
+            if (StringUtils.isEmpty(appid)){
+                throw new IllegalArgumentException("Configuration parameter app.id not detected,Please check app.properties!");
+            }
         } catch (IOException e) {
             throw new BaseException(e, BaseExceotionEnum.RESOURCE_LOAD_ERROR.getCode(), BaseExceotionEnum.RESOURCE_LOAD_ERROR.getMessage(), BaseExceotionEnum.RESOURCE_LOAD_ERROR.getStatus());
         }
