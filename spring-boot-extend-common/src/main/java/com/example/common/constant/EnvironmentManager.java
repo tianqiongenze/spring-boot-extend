@@ -3,9 +3,9 @@ package com.example.common.constant;
 import com.example.common.exception.BaseExceotionEnum;
 import com.example.common.exception.BaseException;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
@@ -108,30 +108,29 @@ public class EnvironmentManager {
     public static final Boolean MONGODB_DEFAULT_CONFIG_REPOSITORIESENABLED = true;
 
     //dubbo服务配置
-    public static final String DUBBO_PROTOCOL = "dubbo.protocol";
-    public static final String DUBBO_PORT = "dubbo.port";
-    public static final String DUBBO_LOGGER = "dubbo.logger";
-    public static final String DUBBO_HOST = "dubbo.host";
-    public static final String DUBBO_TIMEOUT = "dubbo.timeout";
-    public static final String DUBBO_RETRIES = "dubbo.retries";
-    public static final String DUBBO_DELAY = "dubbo.delay";
-    public static final String DUBBO_REGISTRY_PROTOCOL = "dubbo.registryProtocol";
-    public static final String DUBBO_REGISTRY_ADDRESS = "dubbo.registryAddress";
+    public static final String DUBBO_PROTOCOL_NAME = "dubbo.protocol.name";
+    public static final String DUBBO__PROTOCOL_PORT = "dubbo.protocol.port";
+    public static final String DUBBO_APPLICATION_LOGGER = "dubbo.application.logger";
+    public static final String DUBBO_PROVIDER_TIMEOUT = "dubbo.provider.timeout";
+    public static final String DUBBO_PROVIDER_RETRIES = "dubbo.provider.retries";
+    public static final String DUBBO_RPOVIDER_DELAY = "dubbo.provider.delay";
+    public static final String DUBBO_CONSUMER_TIMEOUT = "dubbo.consumer.timeout";
+    public static final String DUBBO_CONSUMER_RETRIES = "dubbo.consumer.retries";
+    public static final String DUBBO_REGISTRY_PROTOCOL = "dubbo.registry.protocol";
+    public static final String DUBBO_REGISTRY_ADDRESS = "dubbo.registry.address";
     public static final String DUBBO_SCAN_PACKNAME = "dubbo.scanPackName";
-    public static final String DUBBO_ENV_CONFIG_NAME = "dubbo.env.name";
 
     //应用相关信息配置
     private static final String APP_PROPERTIES_CLASSPATH = "/META-INF/app.properties";
     private static final String APP_PROPERTIES_KEY = "app.id";
     private static final String APP_PROPERTIES_ENV_PATH = "/META-INF/example/env-%s.properties";
-    private static final String APP_PROPERTIES_ENV_PATH_SUFFIX = ".properties";
 
     private static Properties properties;
     private static String appid;
 
     //加载环境配置参数
     static {
-        ResourceLoader resolver = new DefaultResourceLoader();
+        ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         try {
             properties = new Properties();
             Resource resource = resolver.getResource(String.format(APP_PROPERTIES_ENV_PATH, getEnv()));
@@ -144,7 +143,7 @@ public class EnvironmentManager {
 
     //加载appid
     static {
-        ResourceLoader resolver = new DefaultResourceLoader();
+        ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         try {
             Resource resource = resolver.getResource(APP_PROPERTIES_CLASSPATH);
             properties.load(resource.getInputStream());
@@ -216,9 +215,6 @@ public class EnvironmentManager {
     **/
     public static String getAppid() {
         String property = System.getProperty(APP_PROPERTIES_KEY);
-        if (!StringUtils.isEmpty(property)){
-            return property;
-        }
-        return appid;
+        return !StringUtils.isEmpty(property)?property:appid;
     }
 }

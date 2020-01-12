@@ -44,4 +44,4 @@
 * 引入hystrix组件
 * 动态数据源变更
 * 动态日志变更  **(Done)**
-* DUBBO的SPI扩展  **(Filter扩展)**
+* DUBBO的SPI扩展 **(已扩展实现Filter过滤器)**

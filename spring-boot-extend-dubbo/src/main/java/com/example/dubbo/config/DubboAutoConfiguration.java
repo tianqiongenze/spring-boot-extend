@@ -42,12 +42,11 @@ public class DubboAutoConfiguration implements BeanDefinitionRegistryPostProcess
         //加载配置参数
         ApplicationConfig config = new ApplicationConfig();
         config.setName(EnvironmentManager.getAppid());
-        config.setLogger(getProperty(EnvironmentManager.DUBBO_LOGGER));
+        config.setLogger(getProperty(EnvironmentManager.DUBBO_APPLICATION_LOGGER));
 
         ProtocolConfig protocolConfig = new ProtocolConfig();
-        protocolConfig.setName(getProperty(EnvironmentManager.DUBBO_PROTOCOL));
-        protocolConfig.setHost(getProperty(EnvironmentManager.DUBBO_HOST));
-        protocolConfig.setPort(Integer.valueOf(getProperty(EnvironmentManager.DUBBO_PORT, "20880")));
+        protocolConfig.setName(getProperty(EnvironmentManager.DUBBO_PROTOCOL_NAME));
+        protocolConfig.setPort(Integer.valueOf(getProperty(EnvironmentManager.DUBBO__PROTOCOL_PORT, "20880")));
 
         RegistryConfig registryConfig = new RegistryConfig();
         registryConfig.setProtocol(getProperty(EnvironmentManager.DUBBO_REGISTRY_PROTOCOL, "zookeeper"));
@@ -81,8 +80,8 @@ public class DubboAutoConfiguration implements BeanDefinitionRegistryPostProcess
     **/
     private void registerConsumerConfigBean(ApplicationConfig config, RegistryConfig registryConfig, BeanDefinitionRegistry beanDefinitionRegistry) {
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(ConsumerConfig.class);
-        builder.addPropertyValue("timeout", Integer.valueOf(getProperty(EnvironmentManager.DUBBO_TIMEOUT)));
-        builder.addPropertyValue("retries", Integer.valueOf(getProperty(EnvironmentManager.DUBBO_RETRIES)));
+        builder.addPropertyValue("timeout", Integer.valueOf(getProperty(EnvironmentManager.DUBBO_CONSUMER_TIMEOUT)));
+        builder.addPropertyValue("retries", Integer.valueOf(getProperty(EnvironmentManager.DUBBO_CONSUMER_RETRIES)));
         builder.addPropertyValue("application", config);
         builder.addPropertyValue("registry", registryConfig);
         beanDefinitionRegistry.registerBeanDefinition("consumerConfig", builder.getRawBeanDefinition());
@@ -97,9 +96,9 @@ public class DubboAutoConfiguration implements BeanDefinitionRegistryPostProcess
     **/
     private void registerProviderCondfigBean(ApplicationConfig config, ProtocolConfig protocolConfig, RegistryConfig registryConfig, BeanDefinitionRegistry beanDefinitionRegistry) {
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(ProviderConfig.class);
-        builder.addPropertyValue("timeout", Integer.valueOf(getProperty(EnvironmentManager.DUBBO_TIMEOUT)));
-        builder.addPropertyValue("retries", Integer.valueOf(getProperty(EnvironmentManager.DUBBO_RETRIES)));
-        builder.addPropertyValue("delay", Integer.valueOf(getProperty(EnvironmentManager.DUBBO_DELAY)));
+        builder.addPropertyValue("timeout", Integer.valueOf(getProperty(EnvironmentManager.DUBBO_PROVIDER_TIMEOUT)));
+        builder.addPropertyValue("retries", Integer.valueOf(getProperty(EnvironmentManager.DUBBO_PROVIDER_RETRIES)));
+        builder.addPropertyValue("delay", Integer.valueOf(getProperty(EnvironmentManager.DUBBO_RPOVIDER_DELAY)));
         builder.addPropertyValue("application", config);
         builder.addPropertyValue("protocol", protocolConfig);
         builder.addPropertyValue("registry", registryConfig);
