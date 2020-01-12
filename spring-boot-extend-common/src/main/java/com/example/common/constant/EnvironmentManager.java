@@ -3,9 +3,9 @@ package com.example.common.constant;
 import com.example.common.exception.BaseExceotionEnum;
 import com.example.common.exception.BaseException;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
@@ -131,9 +131,9 @@ public class EnvironmentManager {
 
     //加载环境配置参数
     static {
-        ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-        properties = new Properties();
+        ResourceLoader resolver = new DefaultResourceLoader();
         try {
+            properties = new Properties();
             Resource resource = resolver.getResource(String.format(APP_PROPERTIES_ENV_PATH, getEnv()));
             properties.load(resource.getInputStream());
         } catch (IOException e) {
@@ -144,12 +144,11 @@ public class EnvironmentManager {
 
     //加载appid
     static {
-        ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        ResourceLoader resolver = new DefaultResourceLoader();
         try {
             Resource resource = resolver.getResource(APP_PROPERTIES_CLASSPATH);
-            Properties prop = new Properties();
-            prop.load(resource.getInputStream());
-            appid = prop.getProperty(APP_PROPERTIES_KEY);
+            properties.load(resource.getInputStream());
+            appid = properties.getProperty(APP_PROPERTIES_KEY);
         } catch (IOException e) {
             throw new BaseException(e, BaseExceotionEnum.RESOURCE_LOAD_ERROR.getCode(), BaseExceotionEnum.RESOURCE_LOAD_ERROR.getMessage(), BaseExceotionEnum.RESOURCE_LOAD_ERROR.getStatus());
         }
@@ -216,11 +215,9 @@ public class EnvironmentManager {
     *@Return java.lang.String
     **/
     public static String getAppid() {
-        if (StringUtils.isEmpty(appid)){
-            String property = System.getProperty(APP_PROPERTIES_KEY);
-            if (!StringUtils.isEmpty(property)){
-                return property;
-            }
+        String property = System.getProperty(APP_PROPERTIES_KEY);
+        if (!StringUtils.isEmpty(property)){
+            return property;
         }
         return appid;
     }
