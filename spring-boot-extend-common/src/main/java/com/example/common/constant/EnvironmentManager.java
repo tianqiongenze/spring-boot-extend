@@ -119,13 +119,11 @@ public class EnvironmentManager {
     public static final String DUBBO_REGISTRY_PROTOCOL = "dubbo.registry.protocol";
     public static final String DUBBO_REGISTRY_ADDRESS = "dubbo.registry.address";
     public static final String DUBBO_SCAN_PACKNAME = "dubbo.scanPackName";
-    public static final String DUBBO_ENV_CONFIG_NAME = "dubbo.env.name";
 
     //应用相关信息配置
     private static final String APP_PROPERTIES_CLASSPATH = "/META-INF/app.properties";
     private static final String APP_PROPERTIES_KEY = "app.id";
     private static final String APP_PROPERTIES_ENV_PATH = "/META-INF/example/env-%s.properties";
-    private static final String APP_PROPERTIES_ENV_PATH_SUFFIX = ".properties";
 
     private static Properties properties;
     private static String appid;
@@ -133,8 +131,8 @@ public class EnvironmentManager {
     //加载环境配置参数
     static {
         ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-        properties = new Properties();
         try {
+            properties = new Properties();
             Resource resource = resolver.getResource(String.format(APP_PROPERTIES_ENV_PATH, getEnv()));
             properties.load(resource.getInputStream());
         } catch (IOException e) {
@@ -148,9 +146,8 @@ public class EnvironmentManager {
         ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         try {
             Resource resource = resolver.getResource(APP_PROPERTIES_CLASSPATH);
-            Properties prop = new Properties();
-            prop.load(resource.getInputStream());
-            appid = prop.getProperty(APP_PROPERTIES_KEY);
+            properties.load(resource.getInputStream());
+            appid = properties.getProperty(APP_PROPERTIES_KEY);
         } catch (IOException e) {
             throw new BaseException(e, BaseExceotionEnum.RESOURCE_LOAD_ERROR.getCode(), BaseExceotionEnum.RESOURCE_LOAD_ERROR.getMessage(), BaseExceotionEnum.RESOURCE_LOAD_ERROR.getStatus());
         }
@@ -217,12 +214,7 @@ public class EnvironmentManager {
     *@Return java.lang.String
     **/
     public static String getAppid() {
-        if (StringUtils.isEmpty(appid)){
-            String property = System.getProperty(APP_PROPERTIES_KEY);
-            if (!StringUtils.isEmpty(property)){
-                return property;
-            }
-        }
-        return appid;
+        String property = System.getProperty(APP_PROPERTIES_KEY);
+        return !StringUtils.isEmpty(property)?property:appid;
     }
 }
