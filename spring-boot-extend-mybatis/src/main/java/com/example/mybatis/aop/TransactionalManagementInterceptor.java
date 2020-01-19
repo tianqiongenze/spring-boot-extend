@@ -2,6 +2,8 @@ package com.example.mybatis.aop;
 
 import com.example.common.exception.BaseException;
 import com.example.mybatis.annodation.TranscationalManagement;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -15,6 +17,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.util.ArrayList;
@@ -61,7 +64,7 @@ public class TransactionalManagementInterceptor implements ApplicationContextAwa
                 try {
                     dataSourceTransactionManager.rollback(transactionStatus);
                 } catch (Exception ex){
-                    throw e;
+                    throw ex;
                 }
                 throw e;
 
@@ -90,19 +93,17 @@ public class TransactionalManagementInterceptor implements ApplicationContextAwa
             try {
                 proceed = jp.proceed(jp.getArgs());
                 for (int i = dataSourceTransactionManagerList.size() - 1; i > -1; i--) {
-                    //顺序提交事务,网络异常可能会造成数据不一致
+                    //反序提交事务,网络异常可能会造成数据不一致
                     dataSourceTransactionManagerList.get(i).commit(statuses.get(i));
                 }
-
             } catch (Exception e) {
                 for (int i = dataSourceTransactionManagerList.size() - 1; i > -1; i--) {
                     //按照提交事务的反顺序回滚事务
                     try {
                         dataSourceTransactionManagerList.get(i).rollback(statuses.get(i));
                     }catch (Exception ex){
-                        log.error("反顺序回滚事务异常",e);
+                        throw ex;
                     }
-
                 }
                 throw e;
             }

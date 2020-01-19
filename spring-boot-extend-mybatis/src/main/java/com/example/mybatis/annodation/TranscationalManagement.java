@@ -1,6 +1,7 @@
 package com.example.mybatis.annodation;
 
 import org.springframework.core.annotation.AliasFor;
+import org.springframework.transaction.annotation.Propagation;
 
 import java.lang.annotation.*;
 
@@ -17,6 +18,5 @@ import java.lang.annotation.*;
 @Documented
 public @interface TranscationalManagement {
 
-    @AliasFor("transactionManager")
     String[] value() default {};
 }
