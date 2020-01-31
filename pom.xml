@@ -29,6 +29,7 @@
         <module>spring-boot-extend-common</module>
         <module>spring-boot-extend-mongodb</module>
         <module>spring-boot-extend-dubbo</module>
+        <module>spring-boot-extend-mq</module>
     </modules>
 
     <dependencies>
