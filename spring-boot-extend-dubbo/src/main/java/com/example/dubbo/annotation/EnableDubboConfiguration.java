@@ -1,4 +1,4 @@
-package com.example.dubbo.annodation;
+package com.example.dubbo.annotation;
 
 import com.example.dubbo.config.EnableDubboImportSelector;
 import org.springframework.context.annotation.Import;

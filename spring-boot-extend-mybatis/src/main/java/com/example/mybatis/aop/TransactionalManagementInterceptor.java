@@ -1,9 +1,7 @@
 package com.example.mybatis.aop;
 
 import com.example.common.exception.BaseException;
-import com.example.mybatis.annodation.TranscationalManagement;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.exception.ExceptionUtils;
+import com.example.mybatis.annotation.TranscationalManagement;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -17,7 +15,6 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.util.ArrayList;

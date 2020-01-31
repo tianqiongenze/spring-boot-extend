@@ -1,4 +1,4 @@
-package com.example.mybatis.annodation;
+package com.example.mybatis.annotation;
 
 import com.example.mybatis.config.EnableMyBatisImportSelector;
 import org.springframework.context.annotation.Import;

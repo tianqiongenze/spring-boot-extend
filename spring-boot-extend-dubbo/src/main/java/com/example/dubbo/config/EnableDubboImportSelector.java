@@ -2,7 +2,7 @@ package com.example.dubbo.config;
 
 import com.example.common.config.ConfigurationImportSelector;
 import com.example.common.constant.EnvironmentManager;
-import com.example.dubbo.annodation.EnableDubboConfiguration;
+import com.example.dubbo.annotation.EnableDubboConfiguration;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.util.StringUtils;

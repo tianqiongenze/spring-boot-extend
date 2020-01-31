@@ -1,7 +1,4 @@
-package com.example.mybatis.annodation;
-
-import org.springframework.core.annotation.AliasFor;
-import org.springframework.transaction.annotation.Propagation;
+package com.example.mybatis.annotation;
 
 import java.lang.annotation.*;
 
