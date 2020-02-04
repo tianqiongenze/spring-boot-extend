@@ -45,3 +45,4 @@
 * 动态数据源变更
 * 动态日志变更  **(Done)**
 * DUBBO的SPI扩展
+* RocketMQ模块 **(TO DO)**
