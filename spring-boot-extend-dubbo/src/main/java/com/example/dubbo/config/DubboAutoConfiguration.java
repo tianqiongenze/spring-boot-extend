@@ -10,6 +10,7 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
+import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -102,6 +103,7 @@ public class DubboAutoConfiguration implements BeanDefinitionRegistryPostProcess
         builder.addPropertyValue("application", config);
         builder.addPropertyValue("protocol", protocolConfig);
         builder.addPropertyValue("registry", registryConfig);
+        RootBeanDefinition beanDefinition = new RootBeanDefinition();
         beanDefinitionRegistry.registerBeanDefinition("providerConfig", builder.getRawBeanDefinition());
     }
 

@@ -1,7 +1,10 @@
 package com.example.mq.config;
 
+import com.example.common.constant.EnvironmentManager;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 import org.springframework.context.EnvironmentAware;
@@ -18,6 +21,9 @@ import org.springframework.core.env.Environment;
 public class RocketMQAutoConfiguration implements EnvironmentAware, BeanDefinitionRegistryPostProcessor {
 
     private ConfigurableEnvironment env;
+    private static final Integer MIN_THREAD_NUM = 20;
+    private static final Integer MAX_THREAD_NUM = 64;
+    private static final Integer SEND_MESSAGE_TIME_OUT = 6000;
 
 
     @Override
@@ -36,6 +42,9 @@ public class RocketMQAutoConfiguration implements EnvironmentAware, BeanDefiniti
     *@Return void
     **/
     private void registerRocketMQTemplate(BeanDefinitionRegistry registry) {
+        String producerGroup = EnvironmentManager.getProperty(env, "rocketMq.producerGroup", EnvironmentManager.getAppid()+"ProducerGroup");
+        String nameServerAddress = EnvironmentManager.getProperty(env, "rocketMq.nameServerAddress");
+        int sendMsgTimeout = Integer.parseInt(EnvironmentManager.getProperty(env, "rocketMq.sendMsgTimeOut", SEND_MESSAGE_TIME_OUT+""));
     }
 
     /**
@@ -46,7 +55,25 @@ public class RocketMQAutoConfiguration implements EnvironmentAware, BeanDefiniti
     *@Return void
     **/
     private void registerRocketMQListenerInitialization(BeanDefinitionRegistry registry) {
+        String consumerGroup = EnvironmentManager.getProperty(env, "rocketMq.consumerGroup", EnvironmentManager.getAppid()+"ConsumerGroup");
+        String nameServerAddress = EnvironmentManager.getProperty(env, "rocketMq.nameServerAddress");
+        Integer minThread = MIN_THREAD_NUM;
+        Integer maxThread = MAX_THREAD_NUM;
+        String minThreadProperty = EnvironmentManager.getProperty(env, "rocketMq.minThread");
+        String maxThreadProperty = EnvironmentManager.getProperty(env, "rocketMq.maxThread");
+        if (StringUtils.isNotEmpty(minThreadProperty)) {
+            minThread = Integer.valueOf(minThreadProperty);
+        }
+        if (StringUtils.isNotEmpty(maxThreadProperty)) {
+            maxThread = Integer.valueOf(maxThreadProperty);
+        }
 
+        BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(RocketMQListenerInitialization.class);
+        builder.addPropertyValue("nameServerAddress", nameServerAddress);
+        builder.addPropertyValue("consumerGroup", consumerGroup);
+        builder.addPropertyValue("maxThread", maxThread);
+        builder.addPropertyValue("minThread", minThread);
+        registry.registerBeanDefinition("rocketMQListenerInitialization", builder.getRawBeanDefinition());
     }
 
     @Override
