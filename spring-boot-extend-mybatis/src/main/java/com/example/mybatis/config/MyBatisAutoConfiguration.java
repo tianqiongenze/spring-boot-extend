@@ -1,6 +1,7 @@
 package com.example.mybatis.config;
 
 import com.example.common.constant.EnvironmentManager;
+import com.example.common.exception.BaseExceotionEnum;
 import com.example.common.exception.BaseException;
 import com.example.common.utils.ConfigurationLoadUtil;
 import com.example.mybatis.properties.MyBatisConfigurationProperties;
@@ -241,7 +242,7 @@ public class MyBatisAutoConfiguration implements BeanDefinitionRegistryPostProce
                     Resource[] mappers = resourceResolver.getResources(mapperLocation);
                     resources.addAll(Arrays.asList(mappers));
                 } catch (IOException e) {
-                    throw new BaseException(e, "SYS000", "Mybatis接口文件读取失败", false);
+                    throw new BaseException(e, BaseExceotionEnum.MYBATIS_INIT_MAPPERLOCATIONS_ERROR.getCode(), BaseExceotionEnum.MYBATIS_INIT_MAPPERLOCATIONS_ERROR.getMessage(), BaseExceotionEnum.MYBATIS_INIT_MAPPERLOCATIONS_ERROR.getStatus());
                 }
             }
         }

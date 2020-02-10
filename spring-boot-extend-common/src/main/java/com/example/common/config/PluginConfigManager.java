@@ -1,5 +1,6 @@
 package com.example.common.config;
 
+import com.example.common.exception.BaseExceotionEnum;
 import com.example.common.exception.BaseException;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
@@ -43,7 +44,7 @@ public class PluginConfigManager {
                 }
             }
         } catch (IOException e) {
-            throw new BaseException(e, "SYS002","初始化资源文件失败！", false);
+            throw new BaseException(e, BaseExceotionEnum.SYSTEM_INIT_PROFILES_ERROR.getCode(),BaseExceotionEnum.SYSTEM_INIT_PROFILES_ERROR.getMessage(), BaseExceotionEnum.SYSTEM_INIT_PROFILES_ERROR.getStatus());
         }
     }
 

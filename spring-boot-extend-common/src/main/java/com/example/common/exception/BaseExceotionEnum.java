@@ -16,6 +16,9 @@ public enum BaseExceotionEnum {
     REMOTE_METHOD_ERROR("ERR_005", "远程方法错误", false),
     DATABASE_SQL_ERROR("ERR_006", "数据库SQL执行错误", false),
     BASE_BUSINESS_ERROR("ERR_007", "内部业务错误", false),
+    ROCKET_MQ_INIT_ERROR("ERR_008", "RocketMQ初始化错误", false),
+    SYSTEM_INIT_PROFILES_ERROR("ERR_009", "系统初始化文件错误", false),
+    MYBATIS_INIT_MAPPERLOCATIONS_ERROR("ERR_010", "Mybatis初始化MapperLocations文件错误", false)
     ;
 
     private String code;
