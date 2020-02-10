@@ -1,7 +1,12 @@
 package com.example.mq.config;
 
 import com.example.common.constant.EnvironmentManager;
+import com.example.common.exception.BaseExceotionEnum;
+import com.example.common.exception.BaseException;
+import com.example.mq.plugin.RocketMQTemplate;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.rocketmq.client.exception.MQClientException;
+import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -42,9 +47,24 @@ public class RocketMQAutoConfiguration implements EnvironmentAware, BeanDefiniti
     *@Return void
     **/
     private void registerRocketMQTemplate(BeanDefinitionRegistry registry) {
-        String producerGroup = EnvironmentManager.getProperty(env, "rocketMq.producerGroup", EnvironmentManager.getAppid()+"ProducerGroup");
-        String nameServerAddress = EnvironmentManager.getProperty(env, "rocketMq.nameServerAddress");
-        int sendMsgTimeout = Integer.parseInt(EnvironmentManager.getProperty(env, "rocketMq.sendMsgTimeOut", SEND_MESSAGE_TIME_OUT+""));
+        String producerGroup = EnvironmentManager.getProperty(env, "rocketmq.producerGroup", EnvironmentManager.getAppid()+"ProducerGroup");
+        String nameServerAddress = EnvironmentManager.getProperty(env, "rocketmq.nameServerAddress");
+        int sendMsgTimeout = Integer.parseInt(EnvironmentManager.getProperty(env, "rocketmq.sendMsgTimeOut", SEND_MESSAGE_TIME_OUT+""));
+
+        DefaultMQProducer producer = new DefaultMQProducer();
+        producer.setProducerGroup(producerGroup);
+        producer.setSendMsgTimeout(sendMsgTimeout);
+        producer.setNamesrvAddr(nameServerAddress);
+
+        //begin the producer
+        try {
+            producer.start();
+        } catch (MQClientException e) {
+            throw new BaseException(e, BaseExceotionEnum.ROCKET_MQ_INIT_ERROR.getCode(), BaseExceotionEnum.ROCKET_MQ_INIT_ERROR.getMessage(), BaseExceotionEnum.ROCKET_MQ_INIT_ERROR.getStatus());
+        }
+        BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(RocketMQTemplate.class);
+        builder.addPropertyValue("producer", producer);
+        registry.registerBeanDefinition("rocketmqTemplate", builder.getRawBeanDefinition());
     }
 
     /**
@@ -55,12 +75,12 @@ public class RocketMQAutoConfiguration implements EnvironmentAware, BeanDefiniti
     *@Return void
     **/
     private void registerRocketMQListenerInitialization(BeanDefinitionRegistry registry) {
-        String consumerGroup = EnvironmentManager.getProperty(env, "rocketMq.consumerGroup", EnvironmentManager.getAppid()+"ConsumerGroup");
-        String nameServerAddress = EnvironmentManager.getProperty(env, "rocketMq.nameServerAddress");
+        String consumerGroup = EnvironmentManager.getProperty(env, "rocketmq.consumerGroup", EnvironmentManager.getAppid()+"ConsumerGroup");
+        String nameServerAddress = EnvironmentManager.getProperty(env, "rocketmq.nameServerAddress");
         Integer minThread = MIN_THREAD_NUM;
         Integer maxThread = MAX_THREAD_NUM;
-        String minThreadProperty = EnvironmentManager.getProperty(env, "rocketMq.minThread");
-        String maxThreadProperty = EnvironmentManager.getProperty(env, "rocketMq.maxThread");
+        String minThreadProperty = EnvironmentManager.getProperty(env, "rocketmq.minThread");
+        String maxThreadProperty = EnvironmentManager.getProperty(env, "rocketmq.maxThread");
         if (StringUtils.isNotEmpty(minThreadProperty)) {
             minThread = Integer.valueOf(minThreadProperty);
         }
