@@ -15,19 +15,13 @@ import java.lang.annotation.*;
 @Inherited
 public @interface RocketMQListener {
 
-    String consumerGroup();
+    String consumerGroup() default "";
 
     String tags() default "*";
+
+    String topic() default "";
 
     String consumeThreadMin() default "";
 
     String consumeThreadMax() default "";
-
-    @Target({ElementType.PARAMETER})
-    @Retention(RetentionPolicy.RUNTIME)
-    @interface Param {
-        String name();
-
-        String serialize() default "String";
-    }
 }
