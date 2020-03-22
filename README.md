@@ -14,9 +14,11 @@
     *  直接依赖相关组件，在启动类中添加注解，并且在项目的配置文件/apollo配置中心中配置相关数据源属性即可使用
 * 集成`apollo配置中心`
     *  详情请查看apollo配置中心文档[apollo](https://github.com/ctripcorp/apollo)
+    *  实现日志级别的动态变更
 * 引入`Dubbo`功能
     *  使用`Zookeeper`作为注册中心
     *  Dubbo官方文档[Dubbo](http://dubbo.apache.org/)
+    *  Dubbo SPI扩展
 
 ## 有问题反馈
 在使用中有任何问题，欢迎反馈给我，可以用以下联系方式跟我交流
